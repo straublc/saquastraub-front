@@ -146,6 +146,7 @@
           </tbody>
         </table>
       </div>
+
       <!-- Paginação -->
       <div
         v-if="pagination.totalPages > 1"
@@ -393,7 +394,6 @@ onMounted(() => {
   color: #dc3545 !important;
 }
 
-/* Modal simples em Vue */
 .modal-overlay {
   position: fixed;
   top: 0;

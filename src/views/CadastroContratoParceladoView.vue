@@ -130,7 +130,7 @@ const form = ref({
   data_fim: '',
   valor: 0,
   forma_pgto: '',
-  parcelado: 'sim', // 🔒 sempre parcelado
+  parcelado: 'sim', 
   qtd_parcelas: 1,
   observacoes: ''
 })

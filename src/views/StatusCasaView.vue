@@ -93,7 +93,7 @@ const feedback = ref({
   success: true,
 });
 
-// referência ao componente FullCalendar (para manipular API do calendário)
+// referência ao componente FullCalendar 
 const calendarRef = ref<any>(null);
 
 // Opções do calendário
@@ -102,7 +102,7 @@ const calendarOptions = ref({
   initialView: "dayGridMonth",
   locale: ptBrLocale,
   events: eventos,
-  eventDisplay: "background", // 🔹 pinta todo o quadradinho
+  eventDisplay: "background", // pinta todo o quadradinho
   dateClick: (info: any) => {
     dataSelecionada.value = info.dateStr;
     novoStatus.value = "livre";
@@ -203,10 +203,10 @@ const salvarStatus = async () => {
 // Cores dos status
 const corStatus = (status: string) => {
   switch (status) {
-    case "familia": return "#87CEFA"; // azul claro
-    case "manutencao": return "#FFFACD"; // amarelo claro
-    case "alugado": return "#FF7F7F"; // vermelho claro
-    case "livre": return "#FFFF"; // branco
+    case "familia": return "#87CEFA"; 
+    case "manutencao": return "#FFFACD"; 
+    case "alugado": return "#FF7F7F"; 
+    case "livre": return "#FFFF"; 
     default: return "#FFFFFF";
   }
 };
@@ -222,7 +222,7 @@ onMounted(() => {
   height: 550px;  
 }
 
-/* 🔹 Hoje */
+/* Hoje */
 .fc .fc-daygrid-day.fc-day-today {
   background-color: #e9f5ff !important;
 }
@@ -261,7 +261,7 @@ onMounted(() => {
   text-transform: capitalize;
 }
 
-/* 🔹 Legenda lateral */
+/* Legenda lateral */
 .legend {
   width: 200px;
   height: fit-content;

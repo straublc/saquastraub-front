@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <!-- 🔹 Tabela -->
+    <!--Tabela -->
     <div class="table-responsive">
       <table class="table table-striped">
         <thead>
@@ -113,7 +113,7 @@
       </table>
     </div>
 
-    <!-- 🔹 Paginação -->
+    <!--Paginação -->
     <nav v-if="totalPaginas > 1" class="mt-2">
       <ul class="pagination">
         <li class="page-item" :class="{ disabled: paginaAtual === 1 || loading }">
@@ -135,7 +135,7 @@
       </ul>
     </nav>
 
-    <!-- 🔹 Modal Edição -->
+    <!--Modal Edição -->
     <div v-if="showModalEdicao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -189,7 +189,7 @@
       </div>
     </div>
 
-    <!-- 🔹 Modal Exclusão -->
+    <!-- Modal Exclusão -->
     <div v-if="showModalExclusao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -208,7 +208,7 @@
       </div>
     </div>
 
-<!-- 🔹 Modal Aviso -->
+<!-- Modal Aviso -->
 <div v-if="showModalAviso" class="modal d-block" tabindex="-1" style="z-index: 2000;">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -226,7 +226,7 @@
   </div>
 </div>
 
-<!-- 🔹 Modal Confirmação -->
+<!-- Modal Confirmação -->
 <div v-if="showModalConfirmacao" class="modal d-block" tabindex="-1" style="z-index: 2000;">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -372,21 +372,20 @@ const paginasVisiveis = computed(() => {
   let start = Math.max(1, current - delta)
   let end = Math.min(total, current + delta)
 
-  // ensure we show at least 1..min(5,total)
   if (end - start < delta * 2) {
     start = Math.max(1, Math.min(start, Math.max(1, total - delta * 2)))
     end = Math.min(total, start + delta * 2)
   }
 
   for (let p = start; p <= end; p++) pages.push(p)
-  // ensure first and last included when far away
+  
   if (pages[0] !== 1) {
     pages.unshift(1)
   }
   if (pages[pages.length - 1] !== total) {
     pages.push(total)
   }
-  // unique & sorted
+  
   return Array.from(new Set(pages)).sort((a, b) => a - b)
 })
 
@@ -394,7 +393,7 @@ function prevPage() { if (paginaAtual.value > 1 && !loading.value) buscarPagina(
 function nextPage() { if (paginaAtual.value < totalPaginas.value && !loading.value) buscarPagina(paginaAtual.value + 1) }
 function goToPage(p: number) { if (p >= 1 && p <= totalPaginas.value && !loading.value) buscarPagina(p) }
 
-/* reclamacoesPagina: contém os itens da página atual (vindo do backend) */
+
 const reclamacoesPagina = computed(() => reclamacoes.value || [])
 
 /* ---------- API calls ---------- */
@@ -407,12 +406,6 @@ const listarClientes = async () => {
   }
 }
 
-/**
- * listarReclamacoes(pagina)
- * Envia params: pagina, limite, e os filtros.
- * - envia CPF sem máscara (somente dígitos) no param 'cpf'
- * - espera retorno: { success, data: [...], total: N, dashboard: {...} }
- */
 const listarReclamacoes = async (pagina = 1) => {
   try {
     loading.value = true
@@ -433,10 +426,9 @@ const listarReclamacoes = async (pagina = 1) => {
     console.log('listarReclamacoes -> resposta', res.data)
 
     if (res.data && res.data.success) {
-      // normaliza data array
+      
       reclamacoes.value = Array.isArray(res.data.data) ? res.data.data : (res.data.rows || res.data || [])
 
-      // tenta capturar total de várias formas, com fallback para length
       const maybeTotal = res.data.total ?? res.data.totalRegistros ?? res.data.total_count ?? res.data.count ?? res.headers?.['x-total-count']
       totalRegistros.value = Number(maybeTotal ?? reclamacoes.value.length ?? 0)
 
@@ -446,11 +438,11 @@ const listarReclamacoes = async (pagina = 1) => {
 
       paginaAtual.value = pagina
 
-      // Atualiza dashboard (se fornecido pelo backend)
+      // Atualiza dashboard
       if (res.data.dashboard && typeof res.data.dashboard === 'object') {
         dashboard.value = res.data.dashboard
       } else {
-        // fallback: limpa dashboard
+        
         dashboard.value = {}
       }
     } else {
@@ -471,7 +463,7 @@ const listarReclamacoes = async (pagina = 1) => {
 
 function buscarPagina(p = 1) {
   if (p < 1) return
-  // se CPF preenchido, valida antes de buscar
+  
   if (filtroCpf.value && !validarCpf(filtroCpf.value)) {
     mensagemFiltro.value = 'CPF inválido'
     return
@@ -577,7 +569,6 @@ async function salvarEdicao() {
       return
     }
 
-    // sucesso: fecha modal, mostra confirmação e recarrega página atual
     showModalEdicao.value = false
     showModalConfirmacao.value = true
     await listarReclamacoes(paginaAtual.value)
@@ -637,7 +628,7 @@ onMounted(() => {
 }
 
 .modal[style*="z-index: 2000"] {
-  z-index: 2000 !important; /* garante que aviso/confirmação fiquem acima */
+  z-index: 2000 !important; 
 }
 
 .modal-dialog { margin-top: 10%; }

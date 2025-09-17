@@ -6,7 +6,7 @@
     <div v-if="mensagemErro" class="alert alert-danger">{{ mensagemErro }}</div>
     <div v-if="mensagemSucesso" class="alert alert-success">{{ mensagemSucesso }}</div>
 
-    <!-- 🔎 Filtros de clientes -->
+    <!-- Filtros de clientes -->
     <div class="card p-3 mb-3">
       <h5>Filtrar Clientes</h5>
       <div class="row">
@@ -115,7 +115,7 @@ const form = ref({
   cliente_id: '',
   data_inicio: '',
   data_fim: '',
-  valor: 0, // numérico (para enviar ao backend)
+  valor: 0, 
   forma_pgto: '',
   parcelado: '',
   qtd_parcelas: 1,

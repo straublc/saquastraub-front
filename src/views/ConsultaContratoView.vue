@@ -2,7 +2,7 @@
   <div class="p-4">
     <h2>Consulta de Contratos</h2>
 
-    <!-- 🔹 DASHBOARD ANTIGO -->
+    <!-- DASHBOARD ANTIGO -->
     <div class="row mb-4" v-if="dashboard && Object.keys(dashboard).length">
       <div
         v-for="(valor, chave) in dashboard"
@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <!-- 🔹 FILTROS -->
+    <!-- FILTROS -->
     <div class="mb-3 d-flex gap-2 align-items-end flex-wrap">
       <div class="d-flex flex-column">
         <label for="filtroNome" class="form-label">Nome</label>
@@ -93,7 +93,7 @@
       </div>
     </div>
 
-    <!-- 🔹 TABELA -->
+    <!-- TABELA -->
     <table class="table table-striped">
       <thead>
         <tr>
@@ -148,7 +148,7 @@
       </tbody>
     </table>
 
-    <!-- 🔹 Paginação -->
+    <!-- Paginação -->
     <nav>
       <ul class="pagination justify-content-center">
         <li class="page-item" :class="{ disabled: paginaAtual === 1 }">
@@ -168,7 +168,7 @@
       </ul>
     </nav>
 
-    <!-- 🔹 Modal Edição -->
+    <!-- Modal Edição -->
     <div v-if="showModalEdicao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -214,7 +214,7 @@
       </div>
     </div>
 
-    <!-- 🔹 Modal Confirmação -->
+    <!-- Modal Confirmação -->
     <div v-if="showModalConfirmarEdicao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -233,7 +233,7 @@
       </div>
     </div>
 
-    <!-- 🔹 Modal Visualizar -->
+    <!-- Modal Visualizar -->
     <div v-if="showModalVisualizar" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -273,7 +273,7 @@
     </div>
 
 
-    <!-- 🔹 Modal Exclusão -->
+    <!-- Modal Exclusão -->
     <div v-if="showModalExclusao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -487,10 +487,8 @@ const mascaraCpf = () => {
   filtroCpf.value = filtroCpf.value.replace(/\D/g, "").slice(0, 11);
 };
 
-// substitua a função existente por esta
 const abrirModalEdicao = async (contrato: Contrato) => {
 
-  // helper para normalizar o objeto do contrato e suas parcelas
   const normalize = (c: any) => {
     const clone = JSON.parse(JSON.stringify(c || {}));
 
@@ -524,7 +522,7 @@ const abrirModalEdicao = async (contrato: Contrato) => {
         }));
       }
     } else {
-      // Não é parcelado → garante que não haja parcelas residuais
+      
       clone.parcelas = clone.parcelas && clone.parcelas.length ? clone.parcelas.map((p:any)=>({
         id: p.id, numero: Number(p.numero), valor: Number(p.valor), pago: Boolean(p.pago), data_pagamento: p.data_pagamento ?? null, status: p.status
       })) : [];
@@ -546,15 +544,13 @@ const abrirModalEdicao = async (contrato: Contrato) => {
       contratoEdit.value = normalize(contrato);
     }
   } catch (err) {
-    // se falhar a requisição → fallback seguro (mantém UX)
+    
     console.warn("Não foi possível buscar contrato detalhado, usando dados locais:", err);
     contratoEdit.value = normalize(contrato);
   }
 
-  // abre o modal (mantém ambos os fluxos do template)
   showModalEdicao.value = true;
 };
-
 
 const abrirModalConfirmacao = () => {
   showModalConfirmarEdicao.value = true;
@@ -578,7 +574,6 @@ const salvarEdicao = async () => {
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
 
-    // se o backend retornou parcelas atualizadas, use-as pra atualizar o modal imediatamente
     if (res.data && res.data.success && Array.isArray(res.data.parcelas)) {
       // normalize minimalmente como já faz em listarContratos()
       contratoEdit.value.parcelas = (res.data.parcelas || []).map((p: any) => ({
@@ -593,8 +588,7 @@ const salvarEdicao = async () => {
 
       showModalConfirmarEdicao.value = false;
       showModalEdicao.value = false;
-      // não precisa chamar listarContratos(paginaAtual) agora, mas se preferir, mantenha
-      // listarContratos(paginaAtual.value);
+
       return;
     }
 

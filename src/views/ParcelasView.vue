@@ -60,7 +60,7 @@ import axios from 'axios'
 
 const parcelas = ref([])
 
-// 📌 Buscar parcelas ao carregar a tela
+// Buscar parcelas ao carregar a tela
 const carregarParcelas = async () => {
   try {
     const { data } = await axios.get('http://localhost:3000/parcelas')
@@ -72,7 +72,7 @@ const carregarParcelas = async () => {
   }
 }
 
-// 📌 Marcar parcela como paga
+// Marcar parcela como paga
 const marcarComoPaga = async (id) => {
   try {
     const { data } = await axios.put(`http://localhost:3000/parcelas/${id}/pagar`)
@@ -89,7 +89,7 @@ const marcarComoPaga = async (id) => {
   }
 }
 
-// 📌 Utilidades
+// Utilidades
 const formatarMoeda = (valor) => {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor)
 }

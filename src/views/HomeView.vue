@@ -1,11 +1,11 @@
 <template>
   <div class="home p-4">
-    <!-- 🔹 TOPO COM LOGO -->
+    <!-- TOPO COM LOGO -->
     <div class="text-center mb-4">
       <img src="../assets/logo.png" alt="Logo" class="logo" />
     </div>
 
-    <!-- 🔹 CARDS -->
+    <!-- CARDS -->
     <div class="row">
       <!-- Ranking Top Clientes -->
       <div class="col-md-6 mb-4">
@@ -142,7 +142,7 @@ export default {
   }
 }
 
-/* Ícones com animação subindo (após delay extra) */
+/* Ícones com animação subindo*/
 .rank-icon {
   opacity: 0;
   transform: translateY(25px);
@@ -157,7 +157,6 @@ export default {
   }
 }
 
-/* Cores extras para ícones */
 .gold {
   color: #FFD700;
 }
@@ -180,9 +179,9 @@ export default {
 }
 
 .card-body .list-group-item {
-  font-size: 1.2rem; /* um pouco maior que o padrão */
+  font-size: 1.2rem; 
 }
 .card-body .list-group-item strong {
-  font-size: 1.08rem; /* destaque extra para os rótulos */
+  font-size: 1.08rem; 
 }
 </style>

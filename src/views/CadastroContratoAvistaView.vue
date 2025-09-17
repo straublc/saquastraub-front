@@ -122,8 +122,8 @@ const form = ref({
   data_fim: '',
   valor: 0,
   forma_pgto: '',
-  parcelado: 'nao',   // fixo à vista
-  qtd_parcelas: 1,    // fixo à vista
+  parcelado: 'nao',   
+  qtd_parcelas: 1,    
   observacoes: ''
 })
 

@@ -183,7 +183,7 @@
             <textarea v-model="clienteEdit.observacoes" class="form-control"></textarea>
           </div>
 
-          <!-- 🔹 Endereço -->
+          <!-- Endereço -->
          
           <div class="col-md-4 mb-2">
           <label class="form-label">CEP</label>
@@ -236,8 +236,6 @@
     </div>
   </div>
 </div>
-
-
 
     <!-- Confirmação -->
     <div v-if="showModalConfirmacao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
@@ -371,7 +369,6 @@ const clienteDelete = ref<Cliente>({} as Cliente);
 const clienteView = ref<Cliente>({} as Cliente);
 
 /* ---------- API ---------- */
-/* ---------- API ---------- */
 const listarClientes = async () => {
   try {
     // 🔹 garanta que a API retorne TODOS os clientes (sem limite de 5)
@@ -380,7 +377,6 @@ const listarClientes = async () => {
       params: { limite: 9999 } // 👈 ajuste conforme seu backend
     });
 
-    // se vier { data: [...], total: n }
     clientes.value = Array.isArray(res.data?.data) ? res.data.data : res.data;
 
     console.log("Clientes recebidos (total):", clientes.value.length);
@@ -391,7 +387,6 @@ const listarClientes = async () => {
     console.error("Erro ao listar clientes:", e);
   }
 };
-
 
 /* ---------- Helpers ---------- */
 const apenasLetrasFiltro = () => {
@@ -480,7 +475,7 @@ const formatarCelular = (cel?: string) => {
 
 const mascararCpfEdit = () => {
   if (clienteEdit.value.cpf === undefined) return;
-  // mantém formatação visual; guardamos em clienteEdit.cpf formatado
+  
   clienteEdit.value.cpf = formatarCPF(String(clienteEdit.value.cpf));
 };
 
@@ -519,9 +514,8 @@ const limparFiltros = () => {
 };
 
 /* ---------- Paginação ---------- */
-/* ---------- Paginação ---------- */
 const clientesPagina = computed(() => {
-  // se paginaAtual ficar maior que totalPaginas, força voltar
+
   if (paginaAtual.value > totalPaginas.value) {
     paginaAtual.value = totalPaginas.value;
   }
@@ -586,7 +580,7 @@ const dashboardCards = computed(() => ([
 const abrirModalEdicao = (c: Cliente) => {
   clienteEdit.value = {
     ...c,
-    // garante input date preenchido no formato YYYY-MM-DD
+    
     data_nascimento: formatDateToInput(c.data_nascimento),
     // apresenta máscaras no modal pra edição
     cpf: formatarCPF(c.cpf),
@@ -673,7 +667,7 @@ const salvarEdicao = async () => {
       showModalConfirmacao.value = true;
       // atualizar lista e reaplicar filtros para manter consistência
       await listarClientes();
-      // filtrarClientes(); // já chamado dentro de listarClientes
+      
     } else {
       erroEdicao.value = res.data?.message || "Erro ao salvar alterações.";
     }
@@ -716,7 +710,7 @@ const abrirModalVisualizar = async (c: Cliente) => {
   }
 };
 
-// Função no <script setup>
+
 const buscarEnderecoPorCepEdit = async () => {
   const cep = String(clienteEdit.value.cep || "").replace(/\D/g, "");
   if (cep.length !== 8) return;
@@ -736,8 +730,6 @@ const buscarEnderecoPorCepEdit = async () => {
   }
 };
 
-
-/* ---------- Init ---------- */
 onMounted(() => {
   listarClientes();
 });
