@@ -37,6 +37,7 @@
         </select>
       </div>
 
+      <!--
       <div>
         <label class="form-label">Idade</label>
         <select v-model="filtroIdade" class="form-select">
@@ -45,7 +46,7 @@
           <option value="30a59">Entre 30 e 59</option>
           <option value="60mais">Acima de 60</option>
         </select>
-      </div>
+      </div>-->
 
       <div class="d-flex gap-2">
         <button class="btn btn-primary" @click="filtrarClientes">Buscar</button>

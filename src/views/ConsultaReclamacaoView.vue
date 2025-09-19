@@ -155,7 +155,7 @@
 
             <label>Status</label>
             <select v-model="reclamacaoEdit.status" class="form-select mb-2">
-              <option value="aberta">Pendente</option>
+              <option value="aberta">Aberta</option>
               <option value="em andamento">Em andamento</option>
               <option value="resolvida">Resolvida</option>
             </select>
