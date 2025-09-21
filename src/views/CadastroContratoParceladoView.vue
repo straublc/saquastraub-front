@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <h2>Cadastro de Contrato Parcelado</h2>
+    <h2>Cadastro de Contrato (Parcelado)</h2>
 
     <div v-if="mensagemErro" class="alert alert-danger">{{ mensagemErro }}</div>
     <div v-if="mensagemSucesso" class="alert alert-success">{{ mensagemSucesso }}</div>
@@ -88,6 +88,15 @@
       </select>
     </div>
 
+    <!-- Dia de vencimento -->
+    <div class="mb-3">
+      <label>Dia de Vencimento <span class="text-danger">*</span></label>
+      <select v-model="form.dia_vencimento" class="form-select" required>
+        <option value="">Selecione</option>
+        <option v-for="d in 31" :key="d" :value="d">{{ d }}</option>
+      </select>
+    </div>
+
     <!-- Observações -->
     <div class="mb-3">
       <label>Observações</label>
@@ -98,7 +107,7 @@
     <button
       class="btn btn-primary"
       @click="cadastrarContrato"
-      :disabled="!form.cliente_id || !form.data_inicio || !form.data_fim || !form.valor || !form.forma_pgto || !form.qtd_parcelas"
+      :disabled="!form.cliente_id || !form.data_inicio || !form.data_fim || !form.valor || !form.forma_pgto || !form.qtd_parcelas || !form.dia_vencimento"
     >
       Cadastrar
     </button>
@@ -119,10 +128,7 @@ const clientes = ref<Cliente[]>([])
 const mensagemErro = ref('')
 const mensagemSucesso = ref('')
 
-const filtros = ref({
-  nome: '',
-  cpf: ''
-})
+const filtros = ref({ nome: '', cpf: '' })
 
 const form = ref({
   cliente_id: '',
@@ -130,8 +136,9 @@ const form = ref({
   data_fim: '',
   valor: 0,
   forma_pgto: '',
-  parcelado: 'sim', 
+  parcelado: 'sim',
   qtd_parcelas: 1,
+  dia_vencimento: '',
   observacoes: ''
 })
 
@@ -185,12 +192,10 @@ const formatarValor = (e: Event) => {
 const buscarClientes = async () => {
   try {
     mensagemErro.value = ''
-
     if (filtros.value.cpf && !validarCpf(filtros.value.cpf)) {
       mensagemErro.value = 'CPF inválido'
       return
     }
-
     const res = await axios.get('http://localhost:3000/clientes', {
       params: { nome: filtros.value.nome, cpf: filtros.value.cpf },
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -207,17 +212,25 @@ const limparFiltros = () => {
   clientes.value = []
 }
 
-// Cadastrar contrato
+// Cadastrar contrato (Parcelado)
 const cadastrarContrato = async () => {
   try {
     mensagemErro.value = ''
     mensagemSucesso.value = ''
 
-    const hoje = new Date()
-    const dtInicio = new Date(form.value.data_inicio)
-    const dtFim = new Date(form.value.data_fim)
+    // Comparação de datas sem efeito de fuso horário
+    const criarDataLocal = (dataStr: string) => {
+      const [ano, mes, dia] = dataStr.split('-').map(Number)
+      return new Date(ano, mes - 1, dia)
+    }
 
-    if (dtInicio < new Date(hoje.setHours(0, 0, 0, 0))) {
+    const hoje = new Date()
+    hoje.setHours(0, 0, 0, 0)
+
+    const dtInicio = criarDataLocal(form.value.data_inicio)
+    const dtFim = criarDataLocal(form.value.data_fim)
+
+    if (dtInicio < hoje) {
       mensagemErro.value = 'Data de início deve ser hoje ou no futuro'
       return
     }
@@ -226,11 +239,19 @@ const cadastrarContrato = async () => {
       return
     }
 
-    const res = await axios.post('http://localhost:3000/parcelas/criar', form.value, {
+    const payload = {
+      ...form.value,
+      valor: Number(form.value.valor),
+      parcelado: 'sim'
+    }
+
+    const res = await axios.post('http://localhost:3000/contratos', payload, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
 
     mensagemSucesso.value = res.data.message || 'Contrato cadastrado com sucesso!'
+
+    // Reset form
     form.value = {
       cliente_id: '',
       data_inicio: '',
@@ -239,15 +260,12 @@ const cadastrarContrato = async () => {
       forma_pgto: '',
       parcelado: 'sim',
       qtd_parcelas: 1,
+      dia_vencimento: '',
       observacoes: ''
     }
     valorFormatado.value = ''
   } catch (error: any) {
-    if (error.response?.data?.message) {
-      mensagemErro.value = error.response.data.message
-    } else {
-      mensagemErro.value = 'Erro ao cadastrar contrato'
-    }
+    mensagemErro.value = error.response?.data?.message || 'Erro ao cadastrar contrato'
   }
 }
 </script>

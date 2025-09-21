@@ -2,7 +2,19 @@
   <div class="p-4">
     <h2>Consulta de Clientes</h2>
 
-    <!-- Filtros -->
+    <!-- Dashboard Local -->
+    <div class="row mb-4 mt-5" v-if="dashboardCards.length">
+      <div class="col-md-3 mb-3" v-for="card in dashboardCards" :key="card.titulo">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="card-title mb-2">{{ card.titulo }}</h6>
+            <p class="card-text fs-4 fw-bold">{{ card.valor }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <!-- Filtros -->
     <div class="mb-3 d-flex gap-2 flex-wrap align-items-end">
       <div>
         <label class="form-label">Nome</label>
@@ -11,7 +23,7 @@
           @input="apenasLetrasFiltro"
           type="text"
           class="form-control"
-          placeholder="Filtrar por Nome"
+          placeholder="Filtrar por nome"
         />
       </div>
 
@@ -22,7 +34,7 @@
           @input="aplicarMascaraCPFFiltro"
           type="text"
           class="form-control"
-          placeholder="Filtrar por CPF"
+          placeholder="000.000.000-00"
           maxlength="14"
         />
       </div>
@@ -54,18 +66,6 @@
       </div>
     </div>
 
-    <!-- Dashboard Local -->
-    <div class="row mb-4" v-if="dashboardCards.length">
-      <div class="col-md-3 mb-3" v-for="card in dashboardCards" :key="card.titulo">
-        <div class="card shadow-sm">
-          <div class="card-body text-center">
-            <h6 class="card-title mb-2">{{ card.titulo }}</h6>
-            <p class="card-text fs-4 fw-bold">{{ card.valor }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Tabela -->
     <table class="table table-striped">
       <thead>
@@ -92,8 +92,8 @@
           <td>{{ formatarCelular(cliente.celular) }}</td>
           <td>{{ cliente.observacoes }}</td>
           <td>
-            <button class="btn btn-sm btn-warning me-1" @click="abrirModalEdicao(cliente)">Editar</button>
-            <button class="btn btn-sm btn-danger me-1" @click="abrirModalExclusao(cliente)">Excluir</button>
+            <button class="btn btn-sm btn-warning me-3" @click="abrirModalEdicao(cliente)">Editar</button>
+            <button class="btn btn-sm btn-danger me-3" @click="abrirModalExclusao(cliente)">Excluir</button>
             <button class="btn btn-sm btn-info" @click="abrirModalVisualizar(cliente)">Visualizar</button>
           </td>
         </tr>
@@ -125,14 +125,14 @@
 
    <!-- ============ Modal Edição ============ -->
 <div v-if="showModalEdicao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-  <div class="modal-dialog modal-xl"> <!-- 🔹 Aumenta a largura -->
-    <div class="modal-content" style="max-height: 90vh;"> <!-- 🔹 Limita altura -->
+  <div class="modal-dialog modal-xl"> 
+    <div class="modal-content" style="max-height: 90vh;"> 
       <div class="modal-header">
         <h5 class="modal-title">Editar Cliente</h5>
         <button type="button" class="btn-close" @click="fecharEdicao"></button>
       </div>
 
-      <div class="modal-body" style="overflow-y: auto;"> <!-- 🔹 Scroll se passar -->
+      <div class="modal-body" style="overflow-y: auto;">
         <div class="row">
           <div class="col-md-6 mb-2">
             <label class="form-label">Nome</label>
@@ -372,10 +372,10 @@ const clienteView = ref<Cliente>({} as Cliente);
 /* ---------- API ---------- */
 const listarClientes = async () => {
   try {
-    // 🔹 garanta que a API retorne TODOS os clientes (sem limite de 5)
+    // garanta que a API retorne TODOS os clientes (sem limite de 5)
     const res = await axios.get("http://localhost:3000/clientes", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      params: { limite: 9999 } // 👈 ajuste conforme seu backend
+      params: { limite: 9999 } 
     });
 
     clientes.value = Array.isArray(res.data?.data) ? res.data.data : res.data;
@@ -666,7 +666,6 @@ const salvarEdicao = async () => {
     if (res.status === 200 || res.data?.success) {
       showModalEdicao.value = false;
       showModalConfirmacao.value = true;
-      // atualizar lista e reaplicar filtros para manter consistência
       await listarClientes();
       
     } else {

@@ -102,7 +102,7 @@ const calendarOptions = ref({
   initialView: "dayGridMonth",
   locale: ptBrLocale,
   events: eventos,
-  eventDisplay: "background", // pinta todo o quadradinho
+  eventDisplay: "background", 
   dateClick: (info: any) => {
     dataSelecionada.value = info.dateStr;
     novoStatus.value = "livre";
@@ -118,31 +118,36 @@ const carregarEventos = async () => {
     });
 
     if (res.data.success) {
-      try {
-        if (calendarRef.value && calendarRef.value.getApi) {
-          calendarRef.value.getApi().removeAllEvents();
-        }
-      } catch (err) {
-        console.warn("Não foi possível limpar eventos via API do calendário:", err);
+      // Limpa eventos
+      if (calendarRef.value && calendarRef.value.getApi) {
+        calendarRef.value.getApi().removeAllEvents();
       }
 
       eventos.value.splice(
         0,
         eventos.value.length,
-        ...res.data.data.map((s: any) => ({
-          id: s.id,
-          start: s.data_inicio,
-          end: s.data_fim,
-          allDay: true,
-          display: "background",
-          backgroundColor: corStatus(s.status),
-        }))
+        ...res.data.data.map((s: any) => {
+          
+          const startDate = new Date(s.data_inicio);
+          const endDate = new Date(s.data_fim);
+          endDate.setDate(endDate.getDate() + 1); 
+
+          return {
+            id: s.id,
+            start: startDate.toISOString().split("T")[0],
+            end: endDate.toISOString().split("T")[0],
+            allDay: true,
+            display: "background",
+            backgroundColor: corStatus(s.status),
+          };
+        })
       );
     }
   } catch (err) {
     console.error("Erro ao carregar status:", err);
   }
 };
+
 
 // Salva novo status (um por dia)
 const salvarStatus = async () => {

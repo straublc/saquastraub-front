@@ -199,17 +199,22 @@ const limparFiltros = () => {
   clientes.value = []
 }
 
-// Cadastrar contrato (usando mesma rota do parcelado, mas fixando à vista)
+// Cadastrar contrato (À Vista)
 const cadastrarContrato = async () => {
   try {
     mensagemErro.value = ''
     mensagemSucesso.value = ''
 
     const hoje = new Date()
-    const dtInicio = new Date(form.value.data_inicio)
-    const dtFim = new Date(form.value.data_fim)
+    const hojeUTC = new Date(Date.UTC(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()))
 
-    if (dtInicio < new Date(hoje.setHours(0, 0, 0, 0))) {
+    const [anoInicio, mesInicio, diaInicio] = form.value.data_inicio.split('-').map(Number)
+    const dtInicio = new Date(Date.UTC(anoInicio, mesInicio - 1, diaInicio))
+
+    const [anoFim, mesFim, diaFim] = form.value.data_fim.split('-').map(Number)
+    const dtFim = new Date(Date.UTC(anoFim, mesFim - 1, diaFim))
+
+    if (dtInicio < hojeUTC) {
       mensagemErro.value = 'Data de início deve ser hoje ou no futuro'
       return
     }
@@ -218,12 +223,21 @@ const cadastrarContrato = async () => {
       return
     }
 
-    const res = await axios.post('http://localhost:3000/contratos/criar', form.value, {
+    // Como é sempre à vista, já definimos como quitado
+    const payload = {
+      ...form.value,
+      parcelado: 'nao',
+      qtd_parcelas: 1,
+      status_pgto: 'quitado'
+    }
+
+    const res = await axios.post('http://localhost:3000/contratos', payload, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
 
-
     mensagemSucesso.value = res.data.message || 'Contrato cadastrado com sucesso!'
+
+    // Reset form
     form.value = {
       cliente_id: '',
       data_inicio: '',

@@ -1,13 +1,17 @@
 // main.ts
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import axios from 'axios';
 
-// Bootstrap CSS
-import 'bootstrap/dist/css/bootstrap.min.css'
-// Bootstrap JS
-import 'bootstrap'
-// Bootstrap Icons
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
-createApp(App).use(router).mount('#app')
+const app = createApp(App);
+
+app.use(router);
+
+app.config.globalProperties.$axios = axios;
+
+app.mount('#app');

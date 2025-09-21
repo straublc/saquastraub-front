@@ -3,11 +3,11 @@
     <h2>Consulta de Reclamações</h2>
 
     <!-- ---------- Dashboard (vindo do backend) ---------- -->
-    <div v-if="dashboard && Object.keys(dashboard).length" class="row mb-4 g-3">
+    <div v-if="dashboard && Object.keys(dashboard).length" class="mt-4 row mb-4 g-3">
       <div v-for="(valor, chave) in dashboard" :key="chave" class="col-sm-6 col-md-3">
         <div class="card shadow-sm">
           <div class="card-body text-center">
-            <div class="text-muted small mb-1">{{ formatLabel(chave) }}</div>
+            <div class="card-title mb-2" style="font-weight: 500;">{{ formatLabel(chave) }}</div>
             <div class="fs-4 fw-bold">{{ valor }}</div>
           </div>
         </div>
@@ -18,11 +18,11 @@
       {{ mensagemFiltro }}
     </div>
 
-    <!-- 🔹 Filtros -->
+    <!-- Filtros -->
     <div class="mb-3 d-flex flex-wrap gap-3 align-items-end">
       <div>
         <label class="form-label">Nome do Cliente</label>
-        <input v-model="filtroNome" type="text" class="form-control" />
+        <input v-model="filtroNome" type="text" class="form-control" placeholder="Filtrar por nome " />
       </div>
 
       <div>
@@ -97,7 +97,7 @@
             <td>{{ formatarData(r.data_criacao) }}</td>
             <td>{{ r.data_resolucao ? formatarData(r.data_resolucao) : '-' }}</td>
             <td>
-              <button class="btn btn-sm btn-warning me-1" @click="abrirModalEdicao(r)" :disabled="loading">Editar</button>
+              <button class="btn btn-sm btn-warning me-3" @click="abrirModalEdicao(r)" :disabled="loading">Editar</button>
               <button class="btn btn-sm btn-danger" @click="abrirModalExclusao(r)" :disabled="loading">Excluir</button>
             </td>
           </tr>
@@ -412,7 +412,7 @@ const listarReclamacoes = async (pagina = 1) => {
     const params: any = { pagina, limite: itensPorPagina }
 
     if (filtroNome.value) params.nome = filtroNome.value
-    if (filtroCpf.value) params.cpf = unmask(filtroCpf.value) // envia sem máscara
+    if (filtroCpf.value) params.cpf = unmask(filtroCpf.value) 
     if (filtroPrioridade.value) params.prioridade = filtroPrioridade.value
     if (filtroStatus.value) params.status = filtroStatus.value
     if (filtroDataIni.value) params.data_ini = filtroDataIni.value

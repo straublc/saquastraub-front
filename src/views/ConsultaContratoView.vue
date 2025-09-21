@@ -3,7 +3,7 @@
     <h2>Consulta de Contratos</h2>
 
     <!-- DASHBOARD ANTIGO -->
-    <div class="row mb-4" v-if="dashboard && Object.keys(dashboard).length">
+    <div class="row mb-4 mt-5" v-if="dashboard && Object.keys(dashboard).length">
       <div
         v-for="(valor, chave) in dashboard"
         :key="chave"
@@ -27,7 +27,7 @@
           v-model="filtroNome"
           type="text"
           class="form-control"
-          placeholder="Filtrar por Nome"
+          placeholder="Filtrar por nome"
           @input="apenasLetras"
         />
       </div>
@@ -39,14 +39,14 @@
           v-model="filtroCpf"
           type="text"
           class="form-control"
-          placeholder="Filtrar por CPF"
+          placeholder="000.000.000-00"
           @input="mascaraCpf"
         />
       </div>
 
       <div class="d-flex flex-column">
         <label for="formaPgtoFiltro" class="form-label">Forma de Pgto</label>
-        <select id="formaPgtoFiltro" v-model="formaPgtoFiltro" class="form-select">
+        <select id="formaPgtoFiltro" v-model="formaPgtoFiltro" class="form-select" style="min-width: 150px;">
           <option value="">Todas</option>
           <option value="Pix">Pix</option>
           <option value="Débito">Débito</option>
@@ -57,10 +57,21 @@
 
       <div class="d-flex flex-column">
         <label for="parceladoFiltro" class="form-label">Parcelado</label>
-        <select id="parceladoFiltro" v-model="parceladoFiltro" class="form-select">
+        <select id="parceladoFiltro" v-model="parceladoFiltro" class="form-select" style="min-width: 150px;">
           <option value="">Todos</option>
           <option value="sim">Sim</option>
           <option value="nao">Não</option>
+        </select>
+      </div>
+
+
+      <div class="d-flex flex-column">
+        <label for="statusPgtoFiltro" class="form-label">Status</label>
+        <select id="statusPgtoFiltro" v-model="statusPgtoFiltro" class="form-select">
+          <option value="">Todos</option>
+          <option value="quitado">Quitado</option>
+          <option value="em_andamento">Em andamento</option>
+          <option value="atrasado">Atrasado</option>
         </select>
       </div>
 
@@ -73,7 +84,7 @@
           min="2000"
           max="2100"
           class="form-control"
-          placeholder="Ex: 2025"
+          placeholder="0000"
         />
       </div>
 
@@ -105,6 +116,7 @@
           <th>Forma Pgto</th>
           <th>Parcelado</th>
           <th>Qtd. Parcelas</th>
+          <!-- <th>Data Vencimento</th> -->
           <th>Status Pgto</th>
           <th>Observações</th>
           <th>Ações</th>
@@ -120,6 +132,12 @@
           <td>{{ contrato.forma_pgto }}</td>
           <td>{{ contrato.parcelado === "sim" ? "Sim" : "Não" }}</td>
           <td>{{ contrato.parcelado === "sim" ? contrato.qtd_parcelas : 0 }}</td>
+          <!-- <td>
+            <span v-if="contrato.parcelado === 'sim' && contrato.parcelas?.length">
+              {{ formatarData(contrato.parcelas[0].data_vencimento) }}
+            </span>
+            <span v-else>À vista</span>
+          </td> -->
           <td>
             <span
               class="badge"
@@ -134,10 +152,10 @@
           </td>
           <td>{{ contrato.observacoes }}</td>
           <td>
-           <button class="btn btn-sm btn-warning me-1" @click="abrirModalEdicao(contrato)">
+           <button class="btn btn-sm btn-warning me-3" @click="abrirModalEdicao(contrato)">
             Editar
           </button>
-          <button class="btn btn-sm btn-danger me-1" @click="abrirModalExclusao(contrato)">
+          <button class="btn btn-sm btn-danger me-3" @click="abrirModalExclusao(contrato)">
             Excluir
           </button>
           <button class="btn btn-sm btn-info" @click="abrirModalVisualizar(contrato)">
@@ -185,6 +203,7 @@
                   type="checkbox"
                   :id="'parcela-' + parcela.numero"
                   v-model="parcela.pago"
+                   @change="atualizarDataPagamento(parcela)"
                 />
                 <label class="form-check-label" :for="'parcela-' + parcela.numero">
                   {{ parcela.numero }}ª Parcela de {{ formatarMoeda(parcela.valor) }} 
@@ -250,6 +269,12 @@
             <p><strong>Forma de Pagamento:</strong> {{ contratoView.forma_pgto }}</p>
             <p><strong>Parcelado?:</strong> {{ contratoView.parcelado === 'sim' ? 'Sim' : 'Não' }}</p>
             <p v-if="contratoView.parcelado === 'sim'"><strong>Qtd. Parcelas:</strong> {{ contratoView.qtd_parcelas }}</p>
+            <p><strong>Data de Vencimento: </strong>
+              <span v-if="contratoView.parcelado === 'sim' && contratoView.parcelas?.length && contratoView.parcelas[0].data_vencimento">
+                {{ formatarData(contratoView.parcelas[0].data_vencimento) }}
+              </span>
+              <span v-else>À vista</span>
+            </p>
             <p><strong>Status de Pagamento:</strong> {{ traduzirStatus(contratoView.status_pgto) }}</p>
             <p><strong>Observações:</strong> {{ contratoView.observacoes || 'Nenhuma' }}</p>
 
@@ -258,8 +283,11 @@
             <ul v-if="contratoView.parcelas?.length">
               <li v-for="p in contratoView.parcelas" :key="p.id">
                 Parcela {{ p.numero }} - Venc.: {{ formatarData(p.data_vencimento) }} - Valor: {{ formatarMoeda(p.valor) }}
-                <span :class="p.pago ? 'text-success' : 'text-danger'">
-                  ({{ p.pago ? 'Paga' : 'Em aberto' }})
+                <span :class="p.status === 'paga' ? 'text-success' : 'text-danger'">
+                  ({{ p.status === 'paga' ? 'Paga' : 'Em aberto' }})
+                  <span v-if="p.status === 'paga' && p.data_pagamento">
+                    - Pago em {{ formatarData(p.data_pagamento) }}
+                  </span>
                 </span>
               </li>
             </ul>
@@ -338,6 +366,7 @@ const formaPgtoFiltro = ref("");
 const parceladoFiltro = ref("");
 const mesFiltro = ref("");
 const anoFiltro = ref("");
+const statusPgtoFiltro = ref("");
 const dataInicioFiltro = ref("");
 const dataFimFiltro = ref("");
 
@@ -385,6 +414,7 @@ const listarContratos = async (pagina = 1) => {
         cpf: filtroCpf.value || undefined,
         forma_pgto: formaPgtoFiltro.value || undefined,
         parcelado: parceladoFiltro.value || undefined,
+        status_pgto: statusPgtoFiltro.value || undefined,
         mes: mesFiltro.value || undefined,
         ano: anoFiltro.value || undefined,
         data_inicio: dataInicioFiltro.value || undefined,
@@ -436,6 +466,7 @@ const limparFiltros = () => {
   parceladoFiltro.value = "";
   mesFiltro.value = "";
   anoFiltro.value = "";
+  statusPgtoFiltro.value = "";
   dataInicioFiltro.value = "";
   dataFimFiltro.value = "";
   buscarPagina(1);
@@ -532,7 +563,7 @@ const abrirModalEdicao = async (contrato: Contrato) => {
   };
 
   try {
-    // busca versão atualizada do contrato (inclui parcelas)
+    
     const res = await axios.get(`http://localhost:3000/contratos/${contrato.id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
@@ -540,7 +571,7 @@ const abrirModalEdicao = async (contrato: Contrato) => {
     if (res.data && res.data.success && res.data.data) {
       contratoEdit.value = normalize(res.data.data);
     } else {
-      // caso resposta inesperada, fallback para o objeto já presente na tabela
+     
       contratoEdit.value = normalize(contrato);
     }
   } catch (err) {
@@ -555,6 +586,19 @@ const abrirModalEdicao = async (contrato: Contrato) => {
 const abrirModalConfirmacao = () => {
   showModalConfirmarEdicao.value = true;
 };
+
+const atualizarDataPagamento = (parcela: Parcela) => {
+  if (parcela.pago) {
+    const hoje = new Date();
+    const y = hoje.getFullYear();
+    const m = String(hoje.getMonth() + 1).padStart(2, "0");
+    const d = String(hoje.getDate()).padStart(2, "0");
+    parcela.data_pagamento = `${y}-${m}-${d}`;
+  } else {
+    parcela.data_pagamento = null;
+  }
+};
+
 
 const salvarEdicao = async () => {
   try {
