@@ -75,7 +75,7 @@
           <th>Data Nascimento</th>
           <th>Idade</th>
           <th>Sexo</th>
-          <th>Email</th>
+          <th>E-mail</th>
           <th>Celular</th>
           <th>Observações</th>
           <th>Ações</th>
@@ -281,7 +281,7 @@
             <p><strong>Data de Nascimento:</strong> {{ formatarData(clienteView.data_nascimento) }}</p>
             <p><strong>Idade:</strong> {{ calcularIdade(clienteView.data_nascimento) }} anos</p>
             <p><strong>Sexo:</strong> {{ clienteView.sexo }}</p>
-            <p><strong>Email:</strong> {{ clienteView.email }}</p>
+            <p><strong>E-mail:</strong> {{ clienteView.email }}</p>
             <p><strong>Celular:</strong> {{ formatarCelular(clienteView.celular) }}</p>
             <p><strong>Observações:</strong> {{ clienteView.observacoes || 'Nenhuma' }}</p>
             <p><strong>CEP:</strong> {{ clienteView.cep || 'Não informado' }}</p>

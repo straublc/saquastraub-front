@@ -92,7 +92,7 @@
 
         <!-- Email -->
         <div class="col-md-6">
-          <label class="form-label">Email <span class="text-danger">*</span></label>
+          <label class="form-label">E-mail <span class="text-danger">*</span></label>
           <input
             v-model="cliente.email"
             type="email"
@@ -101,7 +101,7 @@
             required
           />
           <div v-if="touched.email && !validarEmail(cliente.email)" class="text-danger mt-1">
-            Email inválido
+            E-mail inválido
           </div>
         </div>
 
