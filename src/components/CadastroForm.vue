@@ -18,7 +18,7 @@
         </div>
 
         <!-- CPF -->
-        <div class="mb-3">
+        <div class="mb-3 position-relative">
           <input
             type="text"
             v-model="cpf"
@@ -42,14 +42,31 @@
         </div>
 
         <!-- Senha -->
-        <div class="mb-3">
+        <div class="mb-3 position-relative">
           <input
-            type="password"
+            :type="mostrarSenha ? 'text' : 'password'"
             v-model="senha"
             class="form-control"
             placeholder="Senha"
             required
           />
+          <span class="toggle-visibility" @click="mostrarSenha = !mostrarSenha">
+            <i :class="mostrarSenha ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </span>
+        </div>
+
+        <!-- Confirmar Senha -->
+        <div class="mb-3 position-relative">
+          <input
+            :type="mostrarConfirmarSenha ? 'text' : 'password'"
+            v-model="confirmarSenha"
+            class="form-control"
+            placeholder="Confirmar Senha"
+            required
+          />
+          <span class="toggle-visibility" @click="mostrarConfirmarSenha = !mostrarConfirmarSenha">
+            <i :class="mostrarConfirmarSenha ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </span>
         </div>
 
         <!-- Botão cadastrar -->
@@ -58,7 +75,7 @@
         <!-- Link Login -->
         <p class="mt-3">
           Já tem conta?
-          <router-link to="/login" class="text-decoration-none">Login</router-link>
+          <router-link to="/login" class="text-decoration-none text-success">Login</router-link>
         </p>
       </form>
 
@@ -87,8 +104,11 @@ const nome = ref("");
 const cpf = ref("");
 const email = ref("");
 const senha = ref("");
+const confirmarSenha = ref("");
 const error = ref("");
 const showModal = ref(false);
+const mostrarSenha = ref(false);
+const mostrarConfirmarSenha = ref(false);
 
 const router = useRouter();
 
@@ -108,23 +128,18 @@ const mascaraCpf = () => {
 const validarCPF = (cpfInput: string) => {
   let cpf = cpfInput.replace(/\D/g, "");
   if (cpf.length !== 11) return false;
-
   if (/^(\d)\1{10}$/.test(cpf)) return false;
 
   let soma = 0;
   let resto;
 
-  for (let i = 1; i <= 9; i++) {
-    soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
-  }
+  for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
   resto = (soma * 10) % 11;
   if (resto === 10 || resto === 11) resto = 0;
   if (resto !== parseInt(cpf.substring(9, 10))) return false;
 
   soma = 0;
-  for (let i = 1; i <= 10; i++) {
-    soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
-  }
+  for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
   resto = (soma * 10) % 11;
   if (resto === 10 || resto === 11) resto = 0;
   if (resto !== parseInt(cpf.substring(10, 11))) return false;
@@ -138,10 +153,7 @@ const senhaForte = (senha: string) => {
   return regex.test(senha);
 };
 
-const validarEmail = (email: string) => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-};
+const validarEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const cadastrar = async () => {
   error.value = "";
@@ -162,6 +174,11 @@ const cadastrar = async () => {
     return;
   }
 
+  if (senha.value !== confirmarSenha.value) {
+    error.value = "As senhas não coincidem.";
+    return;
+  }
+
   try {
     const response = await axios.post("http://localhost:3000/auth/cadastrar", {
       nome: nome.value,
@@ -175,6 +192,7 @@ const cadastrar = async () => {
       cpf.value = "";
       email.value = "";
       senha.value = "";
+      confirmarSenha.value = "";
       showModal.value = true;
     } else {
       error.value = response.data.message || "Erro ao cadastrar usuário";
@@ -208,6 +226,18 @@ const fecharModal = () => {
   object-fit: cover;
   border-radius: 50%;
   margin: 0 auto;
+}
+.position-relative {
+  position: relative;
+}
+.toggle-visibility {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 1.1rem;
+  z-index: 2;
 }
 .modal-container {
   position: fixed;

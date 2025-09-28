@@ -31,7 +31,7 @@
           :disabled="loading"
         >
           <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
-          {{ loading ? 'Enviando...' : 'Enviar link de recuperação' }}
+          {{ loading ? 'Enviando...' : 'Recuperar senha' }}
         </button>
       </form>
 
@@ -72,7 +72,7 @@ export default {
 
         if (response.data.success) {
           this.successMessage =
-            "Se o e-mail estiver cadastrado, você receberá instruções em instantes.";
+            "Um link foi enviado ao seu e-mail, você receberá instruções em instantes.";
           this.email = "";
         } else {
           this.errorMessage =
@@ -97,7 +97,6 @@ export default {
   min-height: 100vh;
 }
 
-/* Mantém centralização */
 .container {
   min-height: 100vh;
   display: flex;
@@ -105,7 +104,6 @@ export default {
   justify-content: center;
 }
 
-/* Card estilizado */
 .card {
   width: 620px;
   min-height: 550px;
@@ -116,7 +114,6 @@ export default {
   justify-content: center;
 }
 
-/* Logo */
 .logo {
   width: 320px;
   height: 320px;
@@ -125,7 +122,6 @@ export default {
   margin: 0 auto;
 }
 
-/* Links */
 .links a,
 .links router-link {
   color: #0b3b1f;

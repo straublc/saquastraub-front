@@ -3,28 +3,40 @@
     <div class="card p-5 text-center">
       <img src="../assets/logo.png" alt="Logo" class="logo mb-1" />
       <h3 class="mb-4">Login</h3>
+
       <form @submit.prevent="login">
-        <div class="mb-3">
+        <!-- CPF com máscara -->
+        <div class="mb-3 position-relative">
           <input
             type="text"
             v-model="cpf"
             class="form-control"
             placeholder="CPF"
             required
+            @input="mascararCPF"
+            maxlength="14"
           />
         </div>
-        <div class="mb-3">
+
+        <!-- Senha com olhinho -->
+        <div class="mb-3 position-relative">
           <input
-            type="password"
+            :type="mostrarSenha ? 'text' : 'password'"
             v-model="senha"
             class="form-control"
             placeholder="Senha"
             required
           />
+          <span class="toggle-visibility" @click="mostrarSenha = !mostrarSenha">
+            <i :class="mostrarSenha ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </span>
         </div>
+
         <button type="submit" class="btn btn-success w-100">Entrar</button>
       </form>
+
       <div v-if="error" class="alert alert-danger mt-3">{{ error }}</div>
+
       <div class="links mt-3">
         <a href="/recuperar-senha">Recuperar senha</a> | 
         <router-link to="/cadastro">Criar conta</router-link>
@@ -41,14 +53,25 @@ import axios from 'axios'
 const cpf = ref('')
 const senha = ref('')
 const error = ref('')
+const mostrarSenha = ref(false)
 
 const router = useRouter()
+
+// Função para aplicar máscara de CPF
+const mascararCPF = () => {
+  let v = cpf.value.replace(/\D/g, '') // remove tudo que não é número
+  v = v.slice(0, 11) // limita a 11 dígitos
+  v = v.replace(/(\d{3})(\d)/, '$1.$2')
+  v = v.replace(/(\d{3})(\d)/, '$1.$2')
+  v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+  cpf.value = v
+}
 
 const login = async () => {
   error.value = ''
   try {
     const response = await axios.post('http://localhost:3000/auth/login', {
-      cpf: cpf.value,
+      cpf: cpf.value.replace(/\D/g, ''), // envia apenas números
       senha: senha.value
     })
     if (response.data.success) {
@@ -69,6 +92,7 @@ const login = async () => {
 .container {
   background-color: #f8f9fa;
 }
+
 .card {
   width: 620px;
   min-height: 550px;
@@ -78,6 +102,7 @@ const login = async () => {
   flex-direction: column;
   justify-content: center;
 }
+
 .logo {
   width: 320px;
   height: 320px;
@@ -85,6 +110,21 @@ const login = async () => {
   border-radius: 50%;
   margin: 0 auto;
 }
+
+.position-relative {
+  position: relative;
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 1.1rem;
+  z-index: 2;
+}
+
 .links a,
 .links router-link {
   color: #0b3b1f;
@@ -92,10 +132,10 @@ const login = async () => {
   text-decoration: none;
   transition: 0.2s;
 }
+
 .links a:hover,
 .links router-link:hover {
   text-decoration: underline;
   color: #299229;
 }
-
 </style>

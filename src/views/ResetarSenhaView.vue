@@ -11,34 +11,40 @@
 
       <div v-else>
         <!-- Erro de token -->
-        <div v-if="erro" class="alert alert-danger">
-          {{ erro }}
+        <div v-if="erroToken" class="alert alert-danger">
+          {{ erroToken }}
         </div>
 
         <!-- Formulário -->
         <form v-else @submit.prevent="resetarSenha">
-          <div class="mb-3 text-start">
+          <!-- Nova Senha -->
+          <div class="mb-3 text-start position-relative">
             <label class="form-label">Nova Senha</label>
             <input
-              type="password"
+              :type="mostrarSenha ? 'text' : 'password'"
               v-model="senha"
               class="form-control"
-              required
-              minlength="8"
               placeholder="Digite sua nova senha"
             />
+            <span class="toggle-visibility" @click="mostrarSenha = !mostrarSenha">
+              <i :class="mostrarSenha ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </span>
+            <div v-if="erroSenha" class="text-danger small mt-1">{{ erroSenha }}</div>
           </div>
 
-          <div class="mb-3 text-start">
+          <!-- Confirmar Senha -->
+          <div class="mb-3 text-start position-relative">
             <label class="form-label">Confirmar Nova Senha</label>
             <input
-              type="password"
+              :type="mostrarConfirmarSenha ? 'text' : 'password'"
               v-model="confirmarSenha"
               class="form-control"
-              required
-              minlength="8"
               placeholder="Confirme sua nova senha"
             />
+            <span class="toggle-visibility" @click="mostrarConfirmarSenha = !mostrarConfirmarSenha">
+              <i :class="mostrarConfirmarSenha ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </span>
+            <div v-if="erroConfirmarSenha" class="text-danger small mt-1">{{ erroConfirmarSenha }}</div>
           </div>
 
           <button
@@ -70,30 +76,50 @@ export default {
   setup() {
     const route = useRoute();
     const router = useRouter();
+
     const token = ref("");
     const senha = ref("");
     const confirmarSenha = ref("");
     const loading = ref(false);
     const carregando = ref(true);
-    const erro = ref("");
+
+    const erroToken = ref("");
+    const erroSenha = ref("");
+    const erroConfirmarSenha = ref("");
     const mensagem = ref("");
+
+    const mostrarSenha = ref(false);
+    const mostrarConfirmarSenha = ref(false);
+
+    const validarSenha = (senha) => {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      return regex.test(senha);
+    };
 
     onMounted(() => {
       token.value = route.query.token || "";
       if (!token.value) {
-        erro.value = "Token de recuperação inválido ou ausente.";
+        erroToken.value = "Token de recuperação inválido ou ausente.";
       }
       carregando.value = false;
     });
 
     const resetarSenha = async () => {
+      erroSenha.value = "";
+      erroConfirmarSenha.value = "";
+
+      if (!validarSenha(senha.value)) {
+        erroSenha.value =
+          "A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas e números.";
+        return;
+      }
+
       if (senha.value !== confirmarSenha.value) {
-        erro.value = "As senhas não coincidem.";
+        erroConfirmarSenha.value = "As senhas não coincidem.";
         return;
       }
 
       loading.value = true;
-      erro.value = "";
       try {
         const { data } = await axios.post(
           "http://localhost:3000/recuperacao/resetar-senha",
@@ -105,10 +131,10 @@ export default {
             "Senha redefinida com sucesso! Você será redirecionado.";
           setTimeout(() => router.push("/login"), 2500);
         } else {
-          erro.value = data.message || "Erro ao redefinir senha.";
+          erroSenha.value = data.message || "Erro ao redefinir senha.";
         }
       } catch (err) {
-        erro.value = err.response?.data?.message || "Erro no servidor.";
+        erroSenha.value = err.response?.data?.message || "Erro no servidor.";
       } finally {
         loading.value = false;
       }
@@ -120,8 +146,12 @@ export default {
       resetarSenha,
       loading,
       carregando,
-      erro,
+      erroToken,
+      erroSenha,
+      erroConfirmarSenha,
       mensagem,
+      mostrarSenha,
+      mostrarConfirmarSenha,
     };
   },
 };
@@ -149,5 +179,19 @@ export default {
   object-fit: cover;
   border-radius: 50%;
   margin: 0 auto;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 10px;
+  top: 38px;
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 1.1rem;
+  z-index: 2;
 }
 </style>

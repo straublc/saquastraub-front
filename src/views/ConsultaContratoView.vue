@@ -602,6 +602,7 @@ const atualizarDataPagamento = (parcela: Parcela) => {
 
 const salvarEdicao = async () => {
   try {
+    // Monta o payload para enviar ao backend
     const payload: any = {
       status_pgto: contratoEdit.value.status_pgto,
       observacoes: contratoEdit.value.observacoes,
@@ -618,32 +619,47 @@ const salvarEdicao = async () => {
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
 
-    if (res.data && res.data.success && Array.isArray(res.data.parcelas)) {
-      // normalize minimalmente como já faz em listarContratos()
-      contratoEdit.value.parcelas = (res.data.parcelas || []).map((p: any) => ({
-        id: p.id,
-        numero: Number(p.numero),
-        valor: Number(p.valor),
-        pago: (String(p.status).toLowerCase() === "paga"),
-        data_pagamento: p.data_pagamento ? String(p.data_pagamento).slice(0,10) : null,
-        status: p.status,
-        __displayData: p.data_pagamento ? String(p.data_pagamento).slice(0,10) : null
-      }));
+    if (res.data && res.data.success) {
+      // Atualiza a linha da tabela diretamente
+      const idx = contratos.value.findIndex(c => c.id === contratoEdit.value.id);
+      if (idx !== -1) {
+        contratos.value[idx] = {
+          ...contratos.value[idx],
+          status_pgto: contratoEdit.value.status_pgto,
+          observacoes: contratoEdit.value.observacoes,
+          parcelas: contratoEdit.value.parcelas
+        };
+      }
 
+      // Atualiza contratoEdit também (normalização das parcelas retornadas do backend)
+      if (Array.isArray(res.data.parcelas)) {
+        contratoEdit.value.parcelas = res.data.parcelas.map((p: any) => ({
+          id: p.id,
+          numero: Number(p.numero),
+          valor: Number(p.valor),
+          pago: String(p.status).toLowerCase() === "paga",
+          data_pagamento: p.data_pagamento ? String(p.data_pagamento).slice(0,10) : null,
+          status: p.status,
+          __displayData: p.data_pagamento ? String(p.data_pagamento).slice(0,10) : null
+        }));
+      }
+
+      // Fecha modais
       showModalConfirmarEdicao.value = false;
       showModalEdicao.value = false;
-
       return;
     }
 
-    // fallback
+    // Fallback: se backend não retornou parcelas, recarrega lista inteira
     showModalConfirmarEdicao.value = false;
     showModalEdicao.value = false;
     listarContratos(paginaAtual.value);
+
   } catch (error: any) {
     console.error("Erro ao salvar edição:", error.response?.data || error);
   }
 };
+
 
 const showModalVisualizar = ref(false);
 const contratoView = ref<Partial<Contrato>>({});

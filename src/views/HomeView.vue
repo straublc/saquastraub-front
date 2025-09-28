@@ -61,8 +61,8 @@
               <li class="list-group-item"><strong>Endereço:</strong> Av. Ademar Aurelino Barreto, 114 - Verde Vale, Saquarema</li>
               <li class="list-group-item"><strong>CEP:</strong> 28994-444</li>
               <li class="list-group-item"><strong>Wi-Fi:</strong> CasaPraia123</li>
-              <li class="list-group-item"><strong>Piscineiro:</strong> (22) 99920-3674</li>
-              <li class="list-group-item"><strong>Jardineiro:</strong> (22) 99865-4950</li>
+              <li class="list-group-item"><strong>Piscineiro:</strong> (22) 99999-3333</li>
+              <li class="list-group-item"><strong>Jardineiro:</strong> (22) 99999-3333</li>
               <li class="list-group-item"><strong>Faxineira:</strong> (22) 99999-3333</li>
               <li class="list-group-item"><strong>Polícia:</strong> 190</li>
               <li class="list-group-item"><strong>Bombeiro:</strong> 193</li>

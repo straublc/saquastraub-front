@@ -118,7 +118,7 @@ const carregarEventos = async () => {
     });
 
     if (res.data.success) {
-      // Limpa eventos
+
       if (calendarRef.value && calendarRef.value.getApi) {
         calendarRef.value.getApi().removeAllEvents();
       }
@@ -127,15 +127,16 @@ const carregarEventos = async () => {
         0,
         eventos.value.length,
         ...res.data.data.map((s: any) => {
-          
-          const startDate = new Date(s.data_inicio);
+          const startDate = s.data_inicio; 
+
           const endDate = new Date(s.data_fim);
           endDate.setDate(endDate.getDate() + 1); 
+          const endStr = endDate.toISOString().split("T")[0];
 
           return {
             id: s.id,
-            start: startDate.toISOString().split("T")[0],
-            end: endDate.toISOString().split("T")[0],
+            start: startDate,
+            end: endStr,
             allDay: true,
             display: "background",
             backgroundColor: corStatus(s.status),
