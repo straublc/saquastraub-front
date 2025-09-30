@@ -1,6 +1,6 @@
 <template>
   <div class="saidas p-4">
-    <h2 class="mb-4 font-bold text-xl">Cadastro de Saídas</h2>
+    <h2 class="mb-4 font-bold text-xl">Cadastro de Despesas</h2>
 
     <!-- Formulário -->
     <div class="card shadow-sm p-4 mb-4">
@@ -74,114 +74,127 @@
       </form>
     </div>
 
-    <!-- Filtros -->
-    <div class="card shadow-sm p-3 mb-4">
-      <div class="row g-3 align-items-end">
-        <div class="col-md-3">
-          <label class="form-label">Status</label>
-          <select v-model="filtros.status" class="form-select">
-            <option value="todos">Todos</option>
-            <option value="Melhoria">Melhoria</option>
-            <option value="Contas fixas">Contas fixas</option>
-            <option value="Reclamações">Reclamações</option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Mês</label>
-          <select v-model="filtros.mes" class="form-select">
-            <option value="">Todos</option>
-            <option v-for="(mes, idx) in meses" :key="idx" :value="idx + 1">
-              {{ mes }}
-            </option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Ano</label>
-          <select v-model="filtros.ano" class="form-select">
-            <option value="">Todos</option>
-            <option v-for="ano in anosDisponiveis" :key="ano" :value="ano">
-              {{ ano }}
-            </option>
-          </select>
-        </div>
-        <div class="col-md-3 d-flex gap-2">
-          <button class="btn btn-success flex-fill" @click="buscarSaidas">
-            Buscar
-          </button>
-          <button class="btn btn-outline-secondary flex-fill" @click="limparFiltros">
-            Limpar
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabela de Saídas -->
-    <div class="card shadow-sm">
-      <div class="card-body p-0">
-        <table class="table table-striped mb-0">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Valor</th>
-              <th>Status</th>
-              <th>Descrição</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="saida in saidas" :key="saida.id ?? saida._id">
-              <td>{{ formatDate(getSaidaDate(saida)) }}</td>
-              <td class="text-danger">{{ formatMoney(saida.valor) }}</td>
-              <td>{{ saida.status }}</td>
-              <td>{{ saida.descricao }}</td>
-              <td>
-                <button class="btn btn-sm btn-outline-danger" @click="abrirModal(saida)">
-                  Excluir
-                </button>
-              </td>
-            </tr>
-            <tr v-if="saidas.length === 0">
-              <td colspan="5" class="text-center">Nenhuma saída encontrada.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Paginação -->
-      <div
-        v-if="pagination.totalPages > 1"
-        class="card-footer d-flex justify-content-between align-items-center"
-      >
-        <button
-          class="btn btn-outline-secondary btn-sm"
-          :disabled="pagination.page === 1"
-          @click="mudarPagina(pagination.page - 1)"
-        >
-          Anterior
-        </button>
-        <span>Página {{ pagination.page }} de {{ pagination.totalPages }}</span>
-        <button
-          class="btn btn-outline-secondary btn-sm"
-          :disabled="pagination.page === pagination.totalPages"
-          @click="mudarPagina(pagination.page + 1)"
-        >
-          Próxima
-        </button>
-      </div>
-    </div>
-
-    <!-- Modal de Confirmação -->
-    <div v-if="modalAberto" class="modal-overlay">
-      <div class="modal-content">
-        <h5 class="mb-3">Confirmação</h5>
-        <p>Tem certeza que deseja excluir esta saída?</p>
-        <div class="d-flex justify-content-end gap-2 mt-3">
-          <button class="btn btn-secondary" @click="fecharModal">Cancelar</button>
-          <button class="btn btn-danger" @click="confirmarExclusao">Excluir</button>
-        </div>
-      </div>
-    </div>
+    <!-- Filtros padronizados -->
+<div class="mb-3 d-flex gap-2 flex-wrap align-items-end mt-5">
+  <div>
+    <label class="form-label">Status</label>
+    <select v-model="filtros.status" class="form-select">
+      <option value="todos">Todos</option>
+      <option value="Melhoria">Melhoria</option>
+      <option value="Contas fixas">Contas fixas</option>
+      <option value="Reclamações">Reclamações</option>
+    </select>
   </div>
+
+  <div>
+    <label class="form-label">Mês</label>
+    <select v-model="filtros.mes" class="form-select">
+      <option value="">Todos</option>
+      <option v-for="(mes, idx) in meses" :key="idx" :value="idx + 1">
+        {{ mes }}
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <label class="form-label">Ano</label>
+    <select v-model="filtros.ano" class="form-select">
+      <option value="">Todos</option>
+      <option v-for="ano in anosDisponiveis" :key="ano" :value="ano">
+        {{ ano }}
+      </option>
+    </select>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button class="btn btn-primary" @click="buscarSaidas">Buscar</button>
+    <button class="btn btn-secondary" @click="limparFiltros">Limpar</button>
+  </div>
+</div>
+
+<!-- Tabela padronizada -->
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <table class="table table-striped text-center mb-0">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Valor</th>
+          <th>Status</th>
+          <th>Descrição</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="saida in saidas" :key="saida.id ?? saida._id">
+          <td>{{ formatDate(getSaidaDate(saida)) }}</td>
+          <td class="text-danger">{{ formatMoney(saida.valor) }}</td>
+          <td>{{ saida.status }}</td>
+          <td>{{ saida.descricao }}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-danger" @click="abrirModal(saida)">
+              Excluir
+            </button>
+          </td>
+        </tr>
+        <tr v-if="saidas.length === 0">
+          <td colspan="5" class="text-center">Nenhuma despesa encontrada.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    <!-- Paginação -->
+    <nav class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" :class="{ disabled: pagination.page === 1 }">
+          <button class="page-link" @click="mudarPagina(pagination.page - 1)">Anterior</button>
+        </li>
+
+        <li
+          v-for="p in totalPaginasVisiveis"
+          :key="p"
+          class="page-item"
+          :class="{ active: pagination.page === p }"
+        >
+          <button class="page-link" @click="mudarPagina(p)">{{ p }}</button>
+        </li>
+
+        <li class="page-item" :class="{ disabled: pagination.page === pagination.totalPages }">
+          <button class="page-link" @click="mudarPagina(pagination.page + 1)">Próxima</button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Modal de Exclusão -->
+    <div v-if="modalAberto" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-center p-5">
+          <!-- Ícone Erro Vermelho -->
+          <div class="mb-4 mx-auto d-flex justify-content-center align-items-center" 
+              style="width:80px; height:80px; border-radius:50%; background-color:#ffe5e5; animation: popIn 0.4s ease-out forwards;">
+            <svg viewBox="0 0 64 64" width="40" height="40">
+              <line x1="16" y1="16" x2="48" y2="48" stroke="#dc3545" stroke-width="6" stroke-linecap="round"/>
+              <line x1="48" y1="16" x2="16" y2="48" stroke="#dc3545" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <h5 class="modal-title mb-3">Excluir Despesa</h5>
+          <p class="text-muted">
+            Tem certeza que deseja excluir esta despesa?
+          </p>
+
+          <div class="d-flex gap-3 mt-4 justify-content-center">
+            <button class="btn btn-secondary w-50" @click="fecharModal">Cancelar</button>
+            <button class="btn btn-danger w-50" @click="confirmarExclusao">Excluir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
 </template>
 
 <script setup lang="ts">
@@ -214,7 +227,6 @@ const meses = [
 ]
 const anosDisponiveis = [2024, 2025]
 
-/* ================== FILTROS ================== */
 const filtros = ref({
   status: "todos",
   mes: "",
@@ -230,7 +242,6 @@ const pagination = ref({
   totalPages: 1
 })
 
-/* ================== CAMPOS TOCADOS ================== */
 const tocado = ref({
   valor: false,
   data: false,
@@ -238,13 +249,11 @@ const tocado = ref({
   descricao: false
 })
 
-/* ================== DATA HOJE (YYYY-MM-DD) ================== */
 function toInputDate(d: Date) {
   return d.toISOString().split("T")[0]
 }
 const hojeInput = ref<string>(toInputDate(new Date()))
 
-/* ================== MÁSCARA DE VALOR ================== */
 const formatarValor = () => {
   let num = valorFormatado.value.replace(/\D/g, "")
   if (!num) {
@@ -259,13 +268,13 @@ const formatarValor = () => {
   }).format(form.value.valor)
 }
 
-/* ================== VALIDAÇÕES ================== */
 const valorValido = computed(() => form.value.valor > 0)
 
 const dataValida = computed(() => {
   if (!form.value.data) return false
   return form.value.data <= hojeInput.value
 })
+
 const dataMensagem = computed(() => {
   if (!form.value.data) return "A data é obrigatória."
   if (form.value.data > hojeInput.value) return "A data não pode ser futura."
@@ -279,7 +288,6 @@ const formValido = computed(() =>
   valorValido.value && dataValida.value && statusValido.value && descricaoValida.value
 )
 
-/* ================== BUSCAR SAÍDAS ================== */
 const buscarSaidas = async () => {
   try {
     const { data } = await api.get("/saida", { params: { ...filtros.value } })
@@ -288,11 +296,10 @@ const buscarSaidas = async () => {
       pagination.value = data.pagination
     }
   } catch (error) {
-    console.error("Erro ao carregar saídas:", error)
+    console.error("Erro ao carregar despesas:", error)
   }
 }
 
-/* ================== LIMPAR FILTROS ================== */
 const limparFiltros = () => {
   filtros.value = { status: "todos", mes: "", ano: "", page: 1, limit: 5 }
   buscarSaidas()
@@ -304,7 +311,27 @@ const mudarPagina = (pagina: number) => {
   buscarSaidas()
 }
 
-/* ================== SALVAR SAÍDA ================== */
+const totalPaginasVisiveis = computed(() => {
+  const pages: number[] = []
+  const total = pagination.value.totalPages
+  const current = pagination.value.page
+  const delta = 2 
+  let start = Math.max(1, current - delta)
+  let end = Math.min(total, current + delta)
+
+  if (end - start < delta * 2) {
+    start = Math.max(1, Math.min(start, Math.max(1, total - delta * 2)))
+    end = Math.min(total, start + delta * 2)
+  }
+
+  for (let p = start; p <= end; p++) pages.push(p)
+
+  if (pages[0] !== 1) pages.unshift(1)
+  if (pages[pages.length - 1] !== total) pages.push(total)
+
+  return Array.from(new Set(pages)).sort((a, b) => a - b)
+})
+
 const salvarSaida = async () => {
   Object.keys(tocado.value).forEach((key) => (tocado.value[key as keyof typeof tocado.value] = true))
 
@@ -327,22 +354,21 @@ const salvarSaida = async () => {
       alert("Erro: " + (data.message ?? "Erro no servidor"))
     }
   } catch (error) {
-    console.error("Erro ao salvar saída:", error)
+    console.error("Erro ao salvar despesa:", error)
     alert("Falha na comunicação com o servidor.")
   }
 }
 
-/* ================== LIMPAR FORM ================== */
 const limparForm = () => {
   form.value = { valor: 0, data: "", status: "", descricao: "" }
   valorFormatado.value = ""
   Object.keys(tocado.value).forEach((key) => (tocado.value[key as keyof typeof tocado.value] = false))
 }
 
-/* ================== HELPERS ================== */
 function formatMoney(value: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)
 }
+
 function formatDate(date: string | undefined) {
   if (!date) return ""
   return new Date(date).toLocaleDateString("pt-BR")
@@ -351,7 +377,6 @@ function getSaidaDate(saida: any) {
   return saida.data_saida ?? saida.data ?? ""
 }
 
-/* ================== MODAL ================== */
 const modalAberto = ref(false)
 const saidaSelecionada = ref<Saida | null>(null)
 
@@ -359,10 +384,12 @@ const abrirModal = (saida: Saida) => {
   saidaSelecionada.value = saida
   modalAberto.value = true
 }
+
 const fecharModal = () => {
   modalAberto.value = false
   saidaSelecionada.value = null
 }
+
 const confirmarExclusao = async () => {
   if (!saidaSelecionada.value?.id) return
   try {
@@ -370,12 +397,11 @@ const confirmarExclusao = async () => {
     fecharModal()
     await buscarSaidas()
   } catch (error) {
-    console.error("Erro ao excluir saída:", error)
-    alert("Falha ao excluir saída.")
+    console.error("Erro ao excluir despesa:", error)
+    alert("Falha ao excluir despesa.")
   }
 }
 
-/* ================== AO MONTAR ================== */
 onMounted(() => {
   buscarSaidas()
 })
@@ -394,24 +420,8 @@ onMounted(() => {
   color: #dc3545 !important;
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1050;
-}
-.modal-content {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  width: 400px;
-  max-width: 90%;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 </style>

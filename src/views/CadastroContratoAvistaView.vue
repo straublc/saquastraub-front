@@ -2,8 +2,37 @@
   <div class="p-4">
     <h2>Cadastro de Contrato (À Vista)</h2>
 
-    <div v-if="mensagemErro" class="alert alert-danger">{{ mensagemErro }}</div>
-    <div v-if="mensagemSucesso" class="alert alert-success">{{ mensagemSucesso }}</div>
+    <!-- Modal de Confirmação -->
+    <div
+      class="modal fade"
+      tabindex="-1"
+      :class="{ show: mensagemErro || mensagemSucesso }"
+      style="display: block;"
+      v-if="mensagemErro || mensagemSucesso"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-center p-5">
+          <!-- Ícone animado -->
+          <div v-if="mensagemSucesso" class="icon-success mb-3 mx-auto"></div>
+          <div v-else class="icon-error mb-3 mx-auto"></div>
+
+          <!-- Mensagem -->
+          <h4 class="modal-title mb-3 fw-bold">
+            {{ mensagemSucesso ? "Contrato cadastrado com sucesso!" : "Erro ao cadastrar contrato" }}
+          </h4>
+
+          <!-- Botão -->
+          <button
+            type="button"
+            class="btn w-100"
+            :class="mensagemSucesso ? 'btn-success' : 'btn-danger'"
+            @click="fecharModal"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Filtros de clientes -->
     <div class="card p-3 mb-3">
@@ -97,6 +126,7 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import axios from 'axios'
@@ -110,6 +140,12 @@ interface Cliente {
 const clientes = ref<Cliente[]>([])
 const mensagemErro = ref('')
 const mensagemSucesso = ref('')
+
+const fecharModal = () => {
+  mensagemErro.value = ''
+  mensagemSucesso.value = ''
+}
+
 
 const filtros = ref({
   nome: '',
@@ -258,3 +294,68 @@ const cadastrarContrato = async () => {
   }
 }
 </script>
+
+<style>
+
+/* Ícone de sucesso (check) */
+.icon-success {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #28a745;
+  position: relative;
+  animation: popIn 0.4s ease-out;
+}
+.icon-success::after {
+  content: '';
+  position: absolute;
+  left: 27px;
+  top: 12px;
+  width: 20px;
+  height: 40px;
+  border-right: 4px solid #28a745;
+  border-bottom: 4px solid #28a745;
+  transform: rotate(45deg);
+  animation: drawCheck 0.6s ease forwards;
+}
+
+/* Ícone de erro (X) */
+.icon-error {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #dc3545;
+  position: relative;
+  animation: popIn 0.4s ease-out;
+}
+.icon-error::before,
+.icon-error::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 44px;
+  height: 4px;
+  background: #dc3545;
+  transform: rotate(45deg);
+  animation: drawX 0.6s ease forwards;
+}
+.icon-error::after {
+  transform: rotate(-45deg);
+}
+
+/* Animações */
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes drawCheck {
+  from { height: 0; width: 0; }
+  to { height: 40px; width: 20px; }
+}
+@keyframes drawX {
+  from { width: 0; opacity: 0; }
+  to { width: 44px; opacity: 1; }
+}
+
+</style>

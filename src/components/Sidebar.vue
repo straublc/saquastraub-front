@@ -70,7 +70,7 @@
           <i :class="isOpen('financeiro') ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
         </a>
         <ul v-if="isOpen('financeiro')" class="submenu list-unstyled ps-4">
-          <li><router-link to="/saidas" class="nav-link">Saídas</router-link></li>
+          <li><router-link to="/saidas" class="nav-link">Despesas</router-link></li>
           <li><router-link to="/relatorio" class="nav-link">Relatório</router-link></li>
         </ul>
       </li>

@@ -105,7 +105,7 @@
     </div>
 
     <!-- TABELA -->
-    <table class="table table-striped">
+    <table class="table table-striped text-center">
       <thead>
         <tr>
           <th>Cliente</th>
@@ -118,7 +118,7 @@
           <th>Qtd. Parcelas</th>
           <!-- <th>Data Vencimento</th> -->
           <th>Status Pgto</th>
-          <th>Observações</th>
+          <!-- <th>Observações</th> -->
           <th>Ações</th>
         </tr>
       </thead>
@@ -150,7 +150,7 @@
               {{ traduzirStatus(contrato.status_pgto) }}
             </span>
           </td>
-          <td>{{ contrato.observacoes }}</td>
+          <!-- <td>{{ contrato.observacoes }}</td> -->
           <td>
            <button class="btn btn-sm btn-warning me-3" @click="abrirModalEdicao(contrato)">
             Editar
@@ -233,55 +233,120 @@
       </div>
     </div>
 
-    <!-- Modal Confirmação -->
+
+    <!-- Modal Confirmação (Warning) -->
     <div v-if="showModalConfirmarEdicao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Confirmar Edição</h5>
-            <button type="button" class="btn-close" @click="showModalConfirmarEdicao = false"></button>
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-center p-5">
+          <!-- Ícone de Atenção Amarelo -->
+          <div class="icon-warning mb-4 mx-auto">
+            <span class="warning-symbol">!</span>
           </div>
-          <div class="modal-body">
-            <p>Deseja realmente salvar as alterações do contrato de <strong>{{ contratoEdit.cliente_nome }}</strong>?</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" @click="showModalConfirmarEdicao = false">Cancelar</button>
-            <button class="btn btn-primary" @click="salvarEdicao">Confirmar</button>
+
+          <h5 class="modal-title mb-3">Confirmar Edição?</h5>
+          <p class="text-muted">
+            Deseja realmente salvar as alterações do contrato de <strong>{{ contratoEdit.cliente_nome }}</strong>?
+          </p>
+
+          <div class="d-flex gap-3 mt-4 justify-content-center">
+            <button class="btn btn-secondary w-50" @click="showModalConfirmarEdicao = false">
+              Cancelar
+            </button>
+            <button class="btn btn-warning w-50" @click="confirmarEdicao">
+              Sim
+            </button>
           </div>
         </div>
       </div>
     </div>
 
+
+    <!-- Modal de Sucesso -->
+    <div v-if="showModalSucessoEdicao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-center p-5">
+          <!-- Ícone de Sucesso Verde -->
+          <div class="icon-success mb-4 mx-auto"></div>
+
+          <h5 class="modal-title mb-3">Contrato atualizado com sucesso!</h5>
+
+          <div class="d-flex gap-3 mt-4 justify-content-center">
+            <button class="btn btn-success w-50" @click="showModalSucessoEdicao = false">
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal Exclusão - Contrato -->
+    <div v-if="showModalExclusao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-center p-5">
+          <!-- Ícone Erro Vermelho -->
+          <div class="mb-4 mx-auto d-flex justify-content-center align-items-center" 
+              style="width:80px; height:80px; border-radius:50%; background-color:#ffe5e5; animation: popIn 0.4s ease-out forwards;">
+            <svg viewBox="0 0 64 64" width="40" height="40">
+              <line x1="16" y1="16" x2="48" y2="48" stroke="#dc3545" stroke-width="6" stroke-linecap="round"/>
+              <line x1="48" y1="16" x2="16" y2="48" stroke="#dc3545" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <h5 class="modal-title mb-3">Excluir Contrato</h5>
+          <p class="text-muted">
+            Deseja realmente excluir o contrato de <strong>{{ contratoDelete.cliente_nome }}</strong>?
+          </p>
+
+          <div class="d-flex gap-3 mt-4">
+            <button class="btn btn-secondary w-50" @click="showModalExclusao = false">
+              Não
+            </button>
+            <button class="btn btn-danger w-50" @click="confirmarExclusao">
+              Sim
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Modal Visualizar -->
     <div v-if="showModalVisualizar" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-3 shadow">
+
+          <div class="modal-header bg-primary text-white">
             <h5 class="modal-title">Detalhes do Contrato</h5>
-            <button type="button" class="btn-close" @click="showModalVisualizar = false"></button>
+            <button type="button" class="btn-close btn-close-white" @click="showModalVisualizar = false"></button>
           </div>
-          <div class="modal-body">
-            <p><strong>Cliente:</strong> {{ contratoView.cliente_nome }}</p>
-            <p><strong>CPF:</strong> {{ aplicarMascaraCpf(contratoView.cliente_cpf) }}</p>
-            <p><strong>Data Início:</strong> {{ formatarData(contratoView.data_inicio) }}</p>
-            <p><strong>Data Fim:</strong> {{ formatarData(contratoView.data_fim) }}</p>
-            <p><strong>Valor:</strong> {{ formatarMoeda(contratoView.valor) }}</p>
-            <p><strong>Forma de Pagamento:</strong> {{ contratoView.forma_pgto }}</p>
-            <p><strong>Parcelado?:</strong> {{ contratoView.parcelado === 'sim' ? 'Sim' : 'Não' }}</p>
-            <p v-if="contratoView.parcelado === 'sim'"><strong>Qtd. Parcelas:</strong> {{ contratoView.qtd_parcelas }}</p>
-            <p><strong>Data de Vencimento: </strong>
-              <span v-if="contratoView.parcelado === 'sim' && contratoView.parcelas?.length && contratoView.parcelas[0].data_vencimento">
-                {{ formatarData(contratoView.parcelas[0].data_vencimento) }}
-              </span>
-              <span v-else>À vista</span>
-            </p>
-            <p><strong>Status de Pagamento:</strong> {{ traduzirStatus(contratoView.status_pgto) }}</p>
-            <p><strong>Observações:</strong> {{ contratoView.observacoes || 'Nenhuma' }}</p>
+
+          <div class="modal-body p-4">
+            <div class="row mb-3">
+              <div class="col-md-6 mb-2"><strong>Cliente:</strong> {{ contratoView.cliente_nome }}</div>
+              <div class="col-md-6 mb-2"><strong>CPF:</strong> {{ aplicarMascaraCpf(contratoView.cliente_cpf) }}</div>
+              <div class="col-md-6 mb-2"><strong>Data Início:</strong> {{ formatarData(contratoView.data_inicio) }}</div>
+              <div class="col-md-6 mb-2"><strong>Data Fim:</strong> {{ formatarData(contratoView.data_fim) }}</div>
+              <div class="col-md-6 mb-2"><strong>Valor:</strong> {{ formatarMoeda(contratoView.valor) }}</div>
+              <div class="col-md-6 mb-2"><strong>Forma de Pagamento:</strong> {{ contratoView.forma_pgto }}</div>
+              <div class="col-md-6 mb-2"><strong>Parcelado?:</strong> {{ contratoView.parcelado === 'sim' ? 'Sim' : 'Não' }}</div>
+              <div class="col-md-6 mb-2" v-if="contratoView.parcelado === 'sim'"><strong>Qtd. Parcelas:</strong> {{ contratoView.qtd_parcelas }}</div>
+              <div class="col-md-6 mb-2">
+                <strong>Data de Vencimento:</strong>
+                <span v-if="contratoView.parcelado === 'sim' && contratoView.parcelas?.length && contratoView.parcelas[0].data_vencimento">
+                  {{ formatarData(contratoView.parcelas[0].data_vencimento) }}
+                </span>
+                <span v-else>À vista</span>
+              </div>
+              <div class="col-md-6 mb-2"><strong>Status de Pagamento:</strong> {{ traduzirStatus(contratoView.status_pgto) }}</div>
+              <div class="col-12"><strong>Observações:</strong> {{ contratoView.observacoes || 'Nenhuma' }}</div>
+            </div>
 
             <hr />
-            <h6>Parcelas</h6>
-            <ul v-if="contratoView.parcelas?.length">
-              <li v-for="p in contratoView.parcelas" :key="p.id">
+
+            <h6 class="fw-bold mb-2">Parcelas</h6>
+            <div v-if="contratoView.parcelas?.length" class="list-group mb-3">
+              <div v-for="p in contratoView.parcelas" :key="p.id" class="list-group-item list-group-item-light rounded mb-2">
                 Parcela {{ p.numero }} - Venc.: {{ formatarData(p.data_vencimento) }} - Valor: {{ formatarMoeda(p.valor) }}
                 <span :class="p.status === 'paga' ? 'text-success' : 'text-danger'">
                   ({{ p.status === 'paga' ? 'Paga' : 'Em aberto' }})
@@ -289,36 +354,19 @@
                     - Pago em {{ formatarData(p.data_pagamento) }}
                   </span>
                 </span>
-              </li>
-            </ul>
-            <div v-else>Sem parcelas</div>
+              </div>
+            </div>
+            <div v-else class="text-muted">Sem parcelas</div>
           </div>
+
           <div class="modal-footer">
             <button class="btn btn-secondary" @click="showModalVisualizar = false">Fechar</button>
           </div>
+
         </div>
       </div>
     </div>
 
-
-    <!-- Modal Exclusão -->
-    <div v-if="showModalExclusao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Excluir Contrato</h5>
-            <button type="button" class="btn-close" @click="showModalExclusao = false"></button>
-          </div>
-          <div class="modal-body">
-            <p>Deseja realmente excluir o contrato de <strong>{{ contratoDelete.cliente_nome }}</strong>?</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" @click="showModalExclusao = false">Não</button>
-            <button class="btn btn-danger" @click="confirmarExclusao">Sim</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -664,6 +712,21 @@ const salvarEdicao = async () => {
 const showModalVisualizar = ref(false);
 const contratoView = ref<Partial<Contrato>>({});
 
+
+const showModalSucessoEdicao = ref(false);
+
+const confirmarEdicao = async () => {
+  // Aqui você salva as alterações no backend
+  await salvarEdicao(); // função que envia os dados
+
+  // Fecha o modal de confirmação
+  showModalConfirmarEdicao.value = false;
+
+  // Abre o modal de sucesso
+  showModalSucessoEdicao.value = true;
+};
+
+
 const abrirModalVisualizar = async (contrato: Contrato) => {
   try {
     const res = await axios.get(`http://localhost:3000/contratos/${contrato.id}`, {
@@ -704,3 +767,32 @@ onMounted(() => {
   listarContratos();
 });
 </script>
+
+<style>
+
+/* Ícone de Atenção / Warning */
+.icon-warning {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #fff4e5; /* amarelo suave */
+  border: 4px solid #ffc107; /* amarelo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  animation: pulse 0.6s infinite;
+}
+
+.warning-symbol {
+  font-size: 40px;
+  font-weight: bold;
+  color: #ffc107;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+</style>

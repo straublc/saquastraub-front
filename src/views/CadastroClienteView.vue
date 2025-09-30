@@ -206,14 +206,27 @@
         </button>
       </div>
 
-      <!-- Feedback -->
-      <div
-        v-if="mensagem"
-        class="mt-3 text-center"
-        :class="{ 'text-success': sucesso, 'text-danger': !sucesso }"
-      >
-        {{ mensagem }}
+      <!-- Modal de Confirmação -->
+      <div class="modal fade" tabindex="-1" :class="{ show: mensagem }" style="display: block;" v-if="mensagem">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content text-center p-5">
+            <!-- Ícone animado -->
+            <div v-if="sucesso" class="icon-success mb-3 mx-auto"></div>
+            <div v-else class="icon-error mb-3 mx-auto"></div>
+
+            <!-- Mensagem -->
+            <h4 class="modal-title mb-3 fw-bold">
+              {{ sucesso ? "Cliente cadastrado com sucesso!" : "Erro no cadastro! Revise os dados inseridos." }}
+            </h4>
+            
+            <!-- Botão -->
+            <button type="button" class="btn w-100":class="sucesso ? 'btn-success' : 'btn-danger'" @click="mensagem = ''">
+              OK
+            </button>
+          </div>
+        </div>
       </div>
+
     </form>
   </div>
 </template>
@@ -392,4 +405,66 @@ const cadastrarCliente = async () => {
 .text-danger {
   font-size: 0.9rem;
 }
+
+/* Ícone de sucesso (check) */
+.icon-success {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #28a745;
+  position: relative;
+  animation: popIn 0.4s ease-out;
+}
+.icon-success::after {
+  content: '';
+  position: absolute;
+  left: 27px;
+  top: 12px;
+  width: 20px;
+  height: 40px;
+  border-right: 4px solid #28a745;
+  border-bottom: 4px solid #28a745;
+  transform: rotate(45deg);
+  animation: drawCheck 0.6s ease forwards;
+}
+
+/* Ícone de erro (X) */
+.icon-error {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #dc3545;
+  position: relative;
+  animation: popIn 0.4s ease-out;
+}
+.icon-error::before,
+.icon-error::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 44px;
+  height: 4px;
+  background: #dc3545;
+  transform: rotate(45deg);
+  animation: drawX 0.6s ease forwards;
+}
+.icon-error::after {
+  transform: rotate(-45deg);
+}
+
+/* Animações */
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes drawCheck {
+  from { height: 0; width: 0; }
+  to { height: 40px; width: 20px; }
+}
+@keyframes drawX {
+  from { width: 0; opacity: 0; }
+  to { width: 44px; opacity: 1; }
+}
+
 </style>

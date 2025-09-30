@@ -67,42 +67,43 @@
     </div>
 
     <!-- Tabela -->
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>CPF</th>
-          <th>Data Nascimento</th>
-          <th>Idade</th>
-          <th>Sexo</th>
-          <th>E-mail</th>
-          <th>Celular</th>
-          <th>Observações</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="cliente in clientesPagina" :key="cliente.id">
-          <td>{{ cliente.nome }}</td>
-          <td>{{ formatarCPF(cliente.cpf) }}</td>
-          <td>{{ formatarData(cliente.data_nascimento) }}</td>
-          <td>{{ calcularIdade(cliente.data_nascimento) }}</td>
-          <td>{{ cliente.sexo }}</td>
-          <td>{{ cliente.email }}</td>
-          <td>{{ formatarCelular(cliente.celular) }}</td>
-          <td>{{ cliente.observacoes }}</td>
-          <td>
-            <button class="btn btn-sm btn-warning me-3" @click="abrirModalEdicao(cliente)">Editar</button>
-            <button class="btn btn-sm btn-danger me-3" @click="abrirModalExclusao(cliente)">Excluir</button>
-            <button class="btn btn-sm btn-info" @click="abrirModalVisualizar(cliente)">Visualizar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<table class="table table-striped text-center">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>CPF</th>
+      <!-- <th>Data Nascimento</th> -->
+      <th>Idade</th>
+      <th>Sexo</th>
+      <!-- <th>E-mail</th> -->
+      <th>Celular</th>
+      <!-- <th>Observações</th> -->
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="cliente in clientesPagina" :key="cliente.id">
+      <td>{{ cliente.nome }}</td>
+      <td>{{ formatarCPF(cliente.cpf) }}</td>
+      <!-- <td>{{ formatarData(cliente.data_nascimento) }}</td> -->
+      <td>{{ calcularIdade(cliente.data_nascimento) }}</td>
+      <td>{{ cliente.sexo }}</td>
+      <!-- <td>{{ cliente.email }}</td> -->
+      <td>{{ formatarCelular(cliente.celular) }}</td>
+      <!-- <td>{{ cliente.observacoes }}</td> -->
+      <td class="text-center">
+        <button class="btn btn-sm btn-warning me-3" @click="abrirModalEdicao(cliente)">Editar</button>
+        <button class="btn btn-sm btn-danger me-3" @click="abrirModalExclusao(cliente)">Excluir</button>
+        <button class="btn btn-sm btn-info" @click="abrirModalVisualizar(cliente)">Visualizar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-    <!-- Paginação -->
+
+  <!-- Paginação -->
   <nav>
-    <ul class="pagination">
+    <ul class="pagination justify-content-center">
       <li class="page-item" :class="{ disabled: paginaAtual === 1 }">
         <button class="page-link" @click="prevPage">Anterior</button>
       </li>
@@ -124,200 +125,227 @@
 
 
    <!-- ============ Modal Edição ============ -->
-<div v-if="showModalEdicao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-  <div class="modal-dialog modal-xl"> 
-    <div class="modal-content" style="max-height: 90vh;"> 
-      <div class="modal-header">
-        <h5 class="modal-title">Editar Cliente</h5>
-        <button type="button" class="btn-close" @click="fecharEdicao"></button>
-      </div>
+  <div v-if="showModalEdicao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-xl"> 
+      <div class="modal-content" style="max-height: 90vh;"> 
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Cliente</h5>
+          <button type="button" class="btn-close" @click="fecharEdicao"></button>
+        </div>
 
-      <div class="modal-body" style="overflow-y: auto;">
-        <div class="row">
-          <div class="col-md-6 mb-2">
-            <label class="form-label">Nome</label>
-            <input v-model="clienteEdit.nome" class="form-control" @input="apenasLetrasEdit" />
-          </div>
+        <div class="modal-body" style="overflow-y: auto;">
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Nome</label>
+              <input v-model="clienteEdit.nome" class="form-control" @input="apenasLetrasEdit" />
+            </div>
 
-          <div class="col-md-6 mb-2">
-            <label class="form-label">CPF</label>
-            <input
-              v-model="clienteEdit.cpf"
-              class="form-control"
-              maxlength="14"
-              @input="mascararCpfEdit"
+            <div class="col-md-6 mb-2">
+              <label class="form-label">CPF</label>
+              <input
+                v-model="clienteEdit.cpf"
+                class="form-control"
+                maxlength="14"
+                @input="mascararCpfEdit"
+              />
+            </div>
+
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Data de Nascimento</label>
+              <input v-model="clienteEdit.data_nascimento" type="date" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Sexo</label>
+              <select v-model="clienteEdit.sexo" class="form-select">
+                <option value="">Selecione</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Email</label>
+              <input v-model="clienteEdit.email" type="email" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Celular</label>
+              <input
+                v-model="clienteEdit.celular"
+                class="form-control"
+                maxlength="15"
+                @input="mascararCelularEdit"
+              />
+            </div>
+
+            <div class="col-12 mb-2">
+              <label class="form-label">Observações</label>
+              <textarea v-model="clienteEdit.observacoes" class="form-control"></textarea>
+            </div>
+
+            <!-- Endereço -->
+          
+            <div class="col-md-4 mb-2">
+            <label class="form-label">CEP</label>
+            <input 
+              v-model="clienteEdit.cep" 
+              class="form-control" 
+              maxlength="9"
+              @blur="buscarEnderecoPorCepEdit"
             />
           </div>
 
-          <div class="col-md-6 mb-2">
-            <label class="form-label">Data de Nascimento</label>
-            <input v-model="clienteEdit.data_nascimento" type="date" class="form-control" />
+          <div class="col-md-8 mb-2">
+            <label class="form-label">Rua</label>
+            <input v-model="clienteEdit.rua" class="form-control" />
           </div>
 
-          <div class="col-md-6 mb-2">
-            <label class="form-label">Sexo</label>
-            <select v-model="clienteEdit.sexo" class="form-select">
-              <option value="">Selecione</option>
-              <option value="M">Masculino</option>
-              <option value="F">Feminino</option>
-              <option value="Outro">Outro</option>
-            </select>
-          </div>
-
-          <div class="col-md-6 mb-2">
-            <label class="form-label">Email</label>
-            <input v-model="clienteEdit.email" type="email" class="form-control" />
-          </div>
-
-          <div class="col-md-6 mb-2">
-            <label class="form-label">Celular</label>
-            <input
-              v-model="clienteEdit.celular"
-              class="form-control"
-              maxlength="15"
-              @input="mascararCelularEdit"
-            />
-          </div>
-
-          <div class="col-12 mb-2">
-            <label class="form-label">Observações</label>
-            <textarea v-model="clienteEdit.observacoes" class="form-control"></textarea>
-          </div>
-
-          <!-- Endereço -->
-         
           <div class="col-md-4 mb-2">
-          <label class="form-label">CEP</label>
-          <input 
-            v-model="clienteEdit.cep" 
-            class="form-control" 
-            maxlength="9"
-            @blur="buscarEnderecoPorCepEdit"
-          />
+            <label class="form-label">Bairro</label>
+            <input v-model="clienteEdit.bairro" class="form-control" />
+          </div>
+
+          <div class="col-md-2 mb-2">
+            <label class="form-label">Número</label>
+            <input v-model="clienteEdit.numero" class="form-control" />
+          </div>
+
+          <div class="col-md-4 mb-2">
+            <label class="form-label">Cidade</label>
+            <input v-model="clienteEdit.cidade" class="form-control" />
+          </div>
+
+          <div class="col-md-2 mb-2">
+            <label class="form-label">UF</label>
+            <input v-model="clienteEdit.estado" class="form-control" />
+          </div>
+
+
+          </div>
+
+          <div v-if="erroEdicao" class="text-danger mt-2">{{ erroEdicao }}</div>
         </div>
 
-        <div class="col-md-8 mb-2">
-          <label class="form-label">Rua</label>
-          <input v-model="clienteEdit.rua" class="form-control" />
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @click="fecharEdicao">Cancelar</button>
+          <button class="btn btn-success" :disabled="isSaving" @click="salvarEdicao">
+            <span v-if="isSaving">Salvando...</span>
+            <span v-else>Salvar</span>
+          </button>
         </div>
-
-        <div class="col-md-4 mb-2">
-          <label class="form-label">Bairro</label>
-          <input v-model="clienteEdit.bairro" class="form-control" />
-        </div>
-
-        <div class="col-md-2 mb-2">
-          <label class="form-label">Número</label>
-          <input v-model="clienteEdit.numero" class="form-control" />
-        </div>
-
-        <div class="col-md-4 mb-2">
-          <label class="form-label">Cidade</label>
-          <input v-model="clienteEdit.cidade" class="form-control" />
-        </div>
-
-        <div class="col-md-2 mb-2">
-          <label class="form-label">UF</label>
-          <input v-model="clienteEdit.estado" class="form-control" />
-        </div>
-
-
-        </div>
-
-        <div v-if="erroEdicao" class="text-danger mt-2">{{ erroEdicao }}</div>
       </div>
+    </div>
+  </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-secondary" @click="fecharEdicao">Cancelar</button>
-        <button class="btn btn-success" :disabled="isSaving" @click="salvarEdicao">
-          <span v-if="isSaving">Salvando...</span>
-          <span v-else>Salvar</span>
+   <!-- Modal de Confirmação de Edição -->
+  <div v-if="showModalConfirmacao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content text-center p-5">
+        <!-- Ícone Atenção Amarelo -->
+        <div class="icon-success mb-4 mx-auto"></div>
+
+        <h5 class="modal-title mb-3">Cliente atualizado com sucesso!</h5>
+        <p class="text-muted">As informações foram salvas corretamente.</p>
+
+        <button class="btn btn-success w-100 mt-4" @click="showModalConfirmacao = false">
+          OK
         </button>
       </div>
     </div>
   </div>
-</div>
 
-    <!-- Confirmação -->
-    <div v-if="showModalConfirmacao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content text-center p-3">
-          <h5>Cliente atualizado com sucesso!</h5>
-          <button class="btn btn-primary mt-3" @click="showModalConfirmacao = false">OK</button>
+  <!-- Modal de Exclusão -->
+  <div v-if="showModalExclusao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content text-center p-5">
+        <!-- Ícone Erro Vermelho -->
+      <div class="mb-4 mx-auto d-flex justify-content-center align-items-center" 
+          style="width:80px; height:80px; border-radius:50%; background-color:#ffe5e5; animation: popIn 0.4s ease-out forwards;">
+        <svg viewBox="0 0 64 64" width="40" height="40">
+          <line x1="16" y1="16" x2="48" y2="48" stroke="#dc3545" stroke-width="6" stroke-linecap="round"/>
+          <line x1="48" y1="16" x2="16" y2="48" stroke="#dc3545" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+
+        <h5 class="modal-title mb-3">Excluir Cliente</h5>
+        <p class="text-muted">
+          Deseja realmente excluir <strong>{{ clienteDelete.nome }}</strong>?
+        </p>
+
+        <div class="d-flex gap-3 mt-4">
+          <button class="btn btn-secondary w-50" @click="showModalExclusao = false">
+            Não
+          </button>
+          <button class="btn btn-danger w-50" @click="confirmarExclusao">
+            Sim
+          </button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Exclusão -->
-    <div v-if="showModalExclusao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Excluir Cliente</h5>
-            <button type="button" class="btn-close" @click="showModalExclusao = false"></button>
-          </div>
-          <div class="modal-body">
-            <p>Deseja realmente excluir <strong>{{ clienteDelete.nome }}</strong>?</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" @click="showModalExclusao = false">Não</button>
-            <button class="btn btn-danger" @click="confirmarExclusao">Sim</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Visualizar -->
+    <!-- Visualizar Cliente -->
     <div v-if="showModalVisualizar" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-3 shadow">
+
+          <div class="modal-header bg-primary text-white">
             <h5 class="modal-title">Detalhes do Cliente</h5>
-            <button type="button" class="btn-close" @click="showModalVisualizar = false"></button>
+            <button type="button" class="btn-close btn-close-white" @click="showModalVisualizar = false"></button>
           </div>
-          <div class="modal-body">
-            <p><strong>Nome:</strong> {{ clienteView.nome }}</p>
-            <p><strong>CPF:</strong> {{ formatarCPF(clienteView.cpf) }}</p>
-            <p><strong>Data de Nascimento:</strong> {{ formatarData(clienteView.data_nascimento) }}</p>
-            <p><strong>Idade:</strong> {{ calcularIdade(clienteView.data_nascimento) }} anos</p>
-            <p><strong>Sexo:</strong> {{ clienteView.sexo }}</p>
-            <p><strong>E-mail:</strong> {{ clienteView.email }}</p>
-            <p><strong>Celular:</strong> {{ formatarCelular(clienteView.celular) }}</p>
-            <p><strong>Observações:</strong> {{ clienteView.observacoes || 'Nenhuma' }}</p>
-            <p><strong>CEP:</strong> {{ clienteView.cep || 'Não informado' }}</p>
-            <p><strong>Cidade:</strong> {{ clienteView.cidade }}</p>
-            <p><strong>Estado:</strong> {{ clienteView.estado }}</p>
-            <p><strong>Rua:</strong> {{ clienteView.rua || 'Não informada' }}</p>
-            <p><strong>Bairro:</strong> {{ clienteView.bairro || 'Não informado' }}</p>
-            <p><strong>Número:</strong> {{ clienteView.numero || 'Não informado' }}</p>
+
+          <div class="modal-body p-4">
+
+            <div class="row mb-3">
+              <div class="col-md-6 mb-2"><strong>Nome:</strong> {{ clienteView.nome }}</div>
+              <div class="col-md-6 mb-2"><strong>CPF:</strong> {{ formatarCPF(clienteView.cpf) }}</div>
+              <div class="col-md-6 mb-2"><strong>Data de Nascimento:</strong> {{ formatarData(clienteView.data_nascimento) }}</div>
+              <div class="col-md-6 mb-2"><strong>Idade:</strong> {{ calcularIdade(clienteView.data_nascimento) }} anos</div>
+              <div class="col-md-6 mb-2"><strong>Sexo:</strong> {{ clienteView.sexo }}</div>
+              <div class="col-md-6 mb-2"><strong>E-mail:</strong> {{ clienteView.email }}</div>
+              <div class="col-md-6 mb-2"><strong>Celular:</strong> {{ formatarCelular(clienteView.celular) }}</div>
+              <div class="col-md-6 mb-2"><strong>CEP:</strong> {{ clienteView.cep || 'Não informado' }}</div>
+              <div class="col-md-6 mb-2"><strong>Cidade:</strong> {{ clienteView.cidade }}</div>
+              <div class="col-md-6 mb-2"><strong>Estado:</strong> {{ clienteView.estado }}</div>
+              <div class="col-md-6 mb-2"><strong>Rua:</strong> {{ clienteView.rua || 'Não informada' }}</div>
+              <div class="col-md-6 mb-2"><strong>Bairro:</strong> {{ clienteView.bairro || 'Não informado' }}</div>
+              <div class="col-md-6 mb-2"><strong>Número:</strong> {{ clienteView.numero || 'Não informado' }}</div>
+              <div class="col-12"><strong>Observações:</strong> {{ clienteView.observacoes || 'Nenhuma' }}</div>
+            </div>
 
             <hr />
 
-            <h6>Contratos</h6>
-            <ul v-if="clienteView.contratos?.length">
-              <li v-for="ctr in clienteView.contratos" :key="(ctr.descricao ?? '') + (ctr.data_inicio ?? '')">
+            <h6 class="fw-bold mb-2">Contratos</h6>
+            <div v-if="clienteView.contratos?.length" class="list-group mb-3">
+              <div v-for="ctr in clienteView.contratos" :key="(ctr.descricao ?? '') + (ctr.data_inicio ?? '')" class="list-group-item list-group-item-light rounded mb-2">
                 <strong>Descrição:</strong> {{ ctr.descricao ?? ('Valor: ' + (ctr.valor ?? '—')) }}
                 <div>
-                  <small>Início: {{ formatarData(ctr.data_inicio ?? '') }} — 
-                  Fim: {{ formatarData(ctr.data_fim ?? '') }}</small>
+                  <small class="text-muted">Início: {{ formatarData(ctr.data_inicio ?? '') }} — Fim: {{ formatarData(ctr.data_fim ?? '') }}</small>
                 </div>
-              </li>
-            </ul>
-            <div v-else>Sem contratos</div>
+              </div>
+            </div>
+            <div v-else class="text-muted mb-3">Sem contratos</div>
 
-            <h6 class="mt-3">Reclamações</h6>
-            <ul v-if="clienteView.reclamacoes?.length">
-              <li v-for="rec in clienteView.reclamacoes" :key="rec.descricao">{{ rec.descricao }}</li>
-            </ul>
-            <div v-else>Sem reclamações</div>
+            <h6 class="fw-bold mb-2">Reclamações</h6>
+            <div v-if="clienteView.reclamacoes?.length" class="list-group">
+              <div v-for="rec in clienteView.reclamacoes" :key="rec.descricao" class="list-group-item list-group-item-warning rounded mb-2">
+                {{ rec.descricao }}
+              </div>
+            </div>
+            <div v-else class="text-muted">Sem reclamações</div>
           </div>
 
           <div class="modal-footer">
             <button class="btn btn-secondary" @click="showModalVisualizar = false">Fechar</button>
           </div>
+
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -736,8 +764,87 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.modal { display: block; background-color: rgba(0,0,0,0.5); overflow: auto; }
-.modal-dialog { margin-top: 6%; }
-.btn-close { border: none; background: transparent; }
-.text-danger { font-size: 0.9rem; }
+.modal { 
+  display: block; 
+  background-color: rgba(0,0,0,0.5); 
+  overflow: auto; 
+}
+
+.btn-close { 
+  border: none; 
+  background: transparent; 
+}
+.text-danger { 
+  font-size: 0.9rem; 
+}
+
+/* Ícone de sucesso (check) */
+.icon-success {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #28a745;
+  position: relative;
+  animation: popIn 0.4s ease-out;
+}
+.icon-success::after {
+  content: '';
+  position: absolute;
+  left: 27px;
+  top: 12px;
+  width: 20px;
+  height: 40px;
+  border-right: 4px solid #28a745;
+  border-bottom: 4px solid #28a745;
+  transform: rotate(45deg);
+  animation: drawCheck 0.6s ease forwards;
+}
+
+/* Ícone de Erro - Exclusão */
+.icon-error {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #ffe5e5; 
+  border: 4px solid #dc3545; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  animation: popIn 0.4s ease-out forwards;
+}
+
+.icon-error::before,
+.icon-error::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 40px;
+  background-color: #dc3545;
+  top: 20px;
+}
+
+.icon-error::before {
+  transform: rotate(45deg);
+}
+
+.icon-error::after {
+  transform: rotate(-45deg);
+}
+
+/* Animação de entrada */
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 </style>

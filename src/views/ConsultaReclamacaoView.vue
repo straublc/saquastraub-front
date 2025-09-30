@@ -74,7 +74,7 @@
 
     <!--Tabela -->
     <div class="table-responsive">
-      <table class="table table-striped">
+      <table class="table table-striped text-center">
         <thead>
           <tr>
             <th>Cliente</th>
@@ -113,9 +113,9 @@
       </table>
     </div>
 
-    <!--Paginação -->
-    <nav v-if="totalPaginas > 1" class="mt-2">
-      <ul class="pagination">
+    <!-- Paginação -->
+    <nav class="mt-2">
+      <ul class="pagination justify-content-center">
         <li class="page-item" :class="{ disabled: paginaAtual === 1 || loading }">
           <button class="page-link" @click="prevPage" :disabled="paginaAtual === 1 || loading">Anterior</button>
         </li>
@@ -189,63 +189,75 @@
       </div>
     </div>
 
-    <!-- Modal Exclusão -->
+    <!-- Modal Exclusão - Reclamação -->
     <div v-if="showModalExclusao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Excluir Reclamação</h5>
-            <button type="button" class="btn-close" @click="showModalExclusao = false"></button>
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-center p-5">
+          <!-- Ícone Erro Vermelho -->
+          <div class="mb-4 mx-auto d-flex justify-content-center align-items-center" 
+              style="width:80px; height:80px; border-radius:50%; background-color:#ffe5e5; animation: popIn 0.4s ease-out forwards;">
+            <svg viewBox="0 0 64 64" width="40" height="40">
+              <line x1="16" y1="16" x2="48" y2="48" stroke="#dc3545" stroke-width="6" stroke-linecap="round"/>
+              <line x1="48" y1="16" x2="16" y2="48" stroke="#dc3545" stroke-width="6" stroke-linecap="round"/>
+            </svg>
           </div>
-          <div class="modal-body">
-            <p>Deseja realmente excluir a reclamação de <strong>{{ reclamacaoDelete.cliente_nome }}</strong>?</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" @click="showModalExclusao = false" :disabled="saving">Não</button>
-            <button class="btn btn-danger" @click="confirmarExclusao" :disabled="saving">Sim</button>
+
+          <h5 class="modal-title mb-3">Excluir Reclamação</h5>
+          <p class="text-muted">
+            Deseja realmente excluir a reclamação de <strong>{{ reclamacaoDelete.cliente_nome }}</strong>?
+          </p>
+
+          <div class="d-flex gap-3 mt-4">
+            <button class="btn btn-secondary w-50" @click="showModalExclusao = false" :disabled="saving">
+              Não
+            </button>
+            <button class="btn btn-danger w-50" @click="confirmarExclusao" :disabled="saving">
+              Sim
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-<!-- Modal Aviso -->
-<div v-if="showModalAviso" class="modal d-block" tabindex="-1" style="z-index: 2000;">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-warning text-dark">
-        <h5 class="modal-title">Aviso</h5>
-        <button type="button" class="btn-close" @click="showModalAviso = false"></button>
-      </div>
-      <div class="modal-body text-center">
-        <p>A resolução não pode ser no futuro. Resolva e depois insira a data correta!</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" @click="showModalAviso = false">OK</button>
+    <!-- Modal Aviso (Warning) -->
+    <div v-if="showModalAviso" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-center p-5">
+          <!-- Ícone Atenção Amarelo com Pulse -->
+          <div class="icon-warning mb-4 mx-auto" 
+              style="width:80px; height:80px; border-radius:50%; background-color:#fff4e5; display:flex; justify-content:center; align-items:center; animation: pulse 1s infinite;">
+            <span style="color:#ffc107; font-size:36px; font-weight:bold;">!</span>
+          </div>
+
+          <h5 class="modal-title mb-3">Aviso</h5>
+          <p class="text-muted">
+            A resolução não pode ser no futuro. Resolva e depois insira a data correta!
+          </p>
+
+          <div class="d-flex gap-3 mt-4 justify-content-center">
+            <button class="btn btn-warning w-50" @click="showModalAviso = false">OK</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Modal Confirmação -->
-<div v-if="showModalConfirmacao" class="modal d-block" tabindex="-1" style="z-index: 2000;">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title">Sucesso</h5>
-        <button type="button" class="btn-close" @click="showModalConfirmacao = false"></button>
-      </div>
-      <div class="modal-body text-center">
-        <p>Reclamação atualizada com sucesso!</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-success" @click="showModalConfirmacao = false">OK</button>
+    <!-- Modal Confirmação (Success) -->
+    <div v-if="showModalConfirmacao" class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-center p-5">
+          <!-- Ícone Sucesso Verde -->
+          <div class="icon-success mb-4 mx-auto"></div>
+
+          <h5 class="modal-title mb-3">Reclamação atualizada com sucesso!</h5>
+
+          <div class="d-flex gap-3 mt-4 justify-content-center">
+            <button class="btn btn-success w-50" @click="showModalConfirmacao = false">OK</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-  </div>
 
-
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -360,15 +372,13 @@ function aplicarMascaraCPFFiltro(e?: Event) {
   filtroCpf.value = v
 }
 
-/* ---------- Pagination (backend) ---------- */
 const totalPaginas = computed(() => Math.max(Math.ceil(totalRegistros.value / itensPorPagina), 1))
 
-// show a small window of pages around current page for better UX
 const paginasVisiveis = computed(() => {
   const pages: number[] = []
   const total = totalPaginas.value
   const current = paginaAtual.value
-  const delta = 2 // pages each side
+  const delta = 2 
   let start = Math.max(1, current - delta)
   let end = Math.min(total, current + delta)
 
@@ -378,25 +388,27 @@ const paginasVisiveis = computed(() => {
   }
 
   for (let p = start; p <= end; p++) pages.push(p)
-  
-  if (pages[0] !== 1) {
-    pages.unshift(1)
-  }
-  if (pages[pages.length - 1] !== total) {
-    pages.push(total)
-  }
-  
+
+  if (pages[0] !== 1) pages.unshift(1)
+  if (pages[pages.length - 1] !== total) pages.push(total)
+
   return Array.from(new Set(pages)).sort((a, b) => a - b)
 })
 
-function prevPage() { if (paginaAtual.value > 1 && !loading.value) buscarPagina(paginaAtual.value - 1) }
-function nextPage() { if (paginaAtual.value < totalPaginas.value && !loading.value) buscarPagina(paginaAtual.value + 1) }
-function goToPage(p: number) { if (p >= 1 && p <= totalPaginas.value && !loading.value) buscarPagina(p) }
+function prevPage() {
+  if (paginaAtual.value > 1 && !loading.value) buscarPagina(paginaAtual.value - 1)
+}
 
+function nextPage() {
+  if (paginaAtual.value < totalPaginas.value && !loading.value) buscarPagina(paginaAtual.value + 1)
+}
+
+function goToPage(p: number) {
+  if (p >= 1 && p <= totalPaginas.value && !loading.value) buscarPagina(p)
+}
 
 const reclamacoesPagina = computed(() => reclamacoes.value || [])
 
-/* ---------- API calls ---------- */
 const listarClientes = async () => {
   try {
     const res = await axios.get('http://localhost:3000/clientes', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
@@ -484,7 +496,6 @@ function limparFiltros() {
   listarReclamacoes(1)
 }
 
-/* ---------- Edição (validação data_resolucao; envia e atualiza tabela) ---------- */
 function parseYMDToLocalDate(ymd?: string | null): Date | null {
   if (!ymd) return null
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd))
@@ -580,7 +591,6 @@ async function salvarEdicao() {
   }
 }
 
-/* ---------- Exclusão ---------- */
 function abrirModalExclusao(r: Reclamacao) { reclamacaoDelete.value = r; showModalExclusao.value = true }
 async function confirmarExclusao() {
   try {
@@ -598,7 +608,6 @@ async function confirmarExclusao() {
   }
 }
 
-/* ---------- Utilidades UI ---------- */
 function formatLabel(key: string) {
   const map: Record<string, string> = {
     totalReclamacoes: 'Total Reclamações',
@@ -612,7 +621,6 @@ function formatLabel(key: string) {
   return map[key] ?? key
 }
 
-/* ---------- Init ---------- */
 onMounted(() => {
   listarClientes()
   listarReclamacoes(1)
@@ -631,9 +639,26 @@ onMounted(() => {
   z-index: 2000 !important; 
 }
 
-.modal-dialog { margin-top: 10%; }
-.table-responsive { max-height: 60vh; overflow: auto; }
-.btn-close { border: none; background: transparent; }
-.card { border-radius: 8px; }
-.card .card-body { padding: 0.75rem; }
+.table-responsive { 
+  max-height: 60vh; 
+  overflow: auto; 
+}
+
+.btn-close { 
+  border: none; 
+  background: transparent; 
+}
+
+.card { 
+  border-radius: 8px; 
+}
+
+.card .card-body { 
+  padding: 0.75rem; 
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
 </style>
