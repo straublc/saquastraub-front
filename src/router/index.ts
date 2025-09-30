@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-// Views públicas
+// views públicas
 import LoginView from '../views/LoginView.vue'
 import CadastroView from '../views/CadastroView.vue'
 import RecuperarSenhaView from '../views/RecuperarSenhaView.vue'
@@ -38,18 +38,19 @@ import MainLayout from '../layouts/MainLayout.vue'
 const routes: Array<RouteRecordRaw> = [
   { path: '/', redirect: '/login' },
 
-  // Rotas públicas (antes do login)
+  // 🔹 Rotas públicas (antes do login)
   { path: '/login', component: LoginView },
   { path: '/cadastro', component: CadastroView },
   { path: '/recuperar-senha', component: RecuperarSenhaView },
   { path: '/resetar-senha', component: ResetarSenhaView },
 
-  // Rotas privadas (após login)
+  // 🔹 Rotas privadas (após login, dentro do MainLayout)
   {
     path: '/',
     component: MainLayout,
     meta: { requiresAuth: true },
     children: [
+      // Home
       { path: 'home', component: HomeView },
 
       // Clientes
@@ -75,7 +76,7 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
 
-  // Rota coringa
+  // 🔹 rota coringa (opcional)
   { path: '/:pathMatch(.*)*', redirect: '/login' }
 ]
 
@@ -84,12 +85,15 @@ const router = createRouter({
   routes
 })
 
-// Navigation guard
+// 🔹 Navigation Guard para proteger as rotas privadas
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const token = localStorage.getItem('token')
-  if (requiresAuth && !token) return next({ path: '/login' })
+
+  if (requiresAuth && !token) {
+    return next({ path: '/login' })
+  }
   next()
 })
 
-export default router
+export { router }
