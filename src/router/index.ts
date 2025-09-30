@@ -38,45 +38,33 @@ import MainLayout from '../layouts/MainLayout.vue'
 const routes: Array<RouteRecordRaw> = [
   { path: '/', redirect: '/login' },
 
-  // 🔹 Rotas públicas (antes do login)
+  // 🔹 Rotas públicas
   { path: '/login', component: LoginView },
   { path: '/cadastro', component: CadastroView },
   { path: '/recuperar-senha', component: RecuperarSenhaView },
   { path: '/resetar-senha', component: ResetarSenhaView },
 
-  // 🔹 Rotas privadas (após login, dentro do MainLayout)
+  // 🔹 Rotas privadas
   {
     path: '/',
     component: MainLayout,
     meta: { requiresAuth: true },
     children: [
-      // Home
       { path: 'home', component: HomeView },
-
-      // Clientes
       { path: 'cadastrarclientes', component: CadastroCliente },
       { path: 'consultarclientes', component: ClientesView },
-
-      // Contratos
       { path: 'cadastrarcontrato', component: CadastroContratoView },
       { path: 'cadastrarcontratoavista', component: CadastroContratoAvistaView },
       { path: 'cadastrarcontratoparcelado', component: CadastroContratoParceladoView },
       { path: 'consultarcontratos', component: ConsultaContratoView },
-
-      // Reclamações
       { path: 'cadastrarreclamacao', component: CadastroReclamacaoView },
       { path: 'consultarreclamacoes', component: ConsultaReclamacaoView },
-
-      // Financeiro
       { path: 'relatorio', component: ConsultaFinanceiroView },
       { path: 'saidas', component: CadastroSaidasView },
-
-      // Status da Casa
       { path: 'statuscasa', component: StatusCasaView },
     ]
   },
 
-  // 🔹 rota coringa (opcional)
   { path: '/:pathMatch(.*)*', redirect: '/login' }
 ]
 
@@ -85,14 +73,12 @@ const router = createRouter({
   routes
 })
 
-// 🔹 Navigation Guard para proteger as rotas privadas
+// Navigation Guard
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const token = localStorage.getItem('token')
 
-  if (requiresAuth && !token) {
-    return next({ path: '/login' })
-  }
+  if (requiresAuth && !token) return next({ path: '/login' })
   next()
 })
 
