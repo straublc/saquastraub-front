@@ -61,12 +61,12 @@
               <li class="list-group-item"><strong>Endereço:</strong> Av. Ademar Aurelino Barreto, 114 - Verde Vale, Saquarema</li>
               <li class="list-group-item"><strong>CEP:</strong> 28994-444</li>
               <li class="list-group-item"><strong>Wi-Fi:</strong> CasaPraia123</li>
-              <li class="list-group-item"><strong>Piscineiro:</strong> (22) 99999-3333</li>
-              <li class="list-group-item"><strong>Jardineiro:</strong> (22) 99999-3333</li>
-              <li class="list-group-item"><strong>Faxineira:</strong> (22) 99999-3333</li>
-              <li class="list-group-item"><strong>Polícia:</strong> 190</li>
+              <li class="list-group-item"><strong>Piscineiro:</strong> (22) 99920-3674</li>
+              <li class="list-group-item"><strong>Jardineiro:</strong> (22) 99865-4950</li>
+              <!-- <li class="list-group-item"><strong>Faxineira:</strong> (22) 99999-3333</li> -->
+              <!-- <li class="list-group-item"><strong>Polícia:</strong> 190</li>
               <li class="list-group-item"><strong>Bombeiro:</strong> 193</li>
-              <li class="list-group-item"><strong>SAMU:</strong> 192</li>
+              <li class="list-group-item"><strong>SAMU:</strong> 192</li> -->
             </ul>
           </div>
         </div>
@@ -124,25 +124,21 @@ export default {
 
       if (this.alertaTimer) clearTimeout(this.alertaTimer);
 
-      // mostra alerta atual
       this.alertaAtual = this.alertasParcelas[this.alertaIndex];
 
-      // configura desaparecimento em 5s
       this.alertaTimer = setTimeout(() => {
         const alertaElement = document.querySelector('.alerta-card');
         if (alertaElement) alertaElement.style.opacity = 0;
 
-        // espera animação de saída
         setTimeout(() => {
           this.alertaAtual = null;
 
-          // avança apenas se houver mais de 1 alerta
           if (this.alertasParcelas.length > 1) {
             this.alertaIndex = (this.alertaIndex + 1) % this.alertasParcelas.length;
             this.mostrarProximoAlerta();
           }
-        }, 500); // duração da animação
-      }, 5000); // 5 segundos visível
+        }, 500); 
+      }, 5000); 
     },
   },
 
