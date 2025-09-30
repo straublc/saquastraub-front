@@ -18,7 +18,7 @@
 
           <!-- Mensagem -->
           <h4 class="modal-title mb-3 fw-bold">
-            {{ mensagemSucesso ? "Contrato cadastrado com sucesso!" : "Erro ao cadastrar contrato" }}
+            {{ mensagemSucesso ? "Contrato cadastrado com sucesso!" : "Erro ao cadastrar contrato!" }}
           </h4>
 
           <!-- Botão -->
@@ -289,7 +289,7 @@ const cadastrarContrato = async () => {
     if (error.response?.data?.message) {
       mensagemErro.value = error.response.data.message
     } else {
-      mensagemErro.value = 'Erro ao cadastrar contrato'
+      mensagemErro.value = 'Erro ao cadastrar contrato!'
     }
   }
 }

@@ -390,7 +390,7 @@ const cadastrarCliente = async () => {
     Object.keys(cliente).forEach((key) => (cliente[key] = ""));
     Object.keys(touched).forEach((key) => (touched[key] = false));
   } catch (error: any) {
-    mensagem.value = error.response?.data?.message || "Erro ao cadastrar cliente";
+    mensagem.value = error.response?.data?.message || "Erro ao cadastrar cliente!";
     sucesso.value = false;
   }
 };

@@ -18,7 +18,7 @@
 
           <!-- Mensagem -->
           <h4 class="modal-title mb-3 fw-bold">
-            {{ mensagemSucesso ? "Reclamação cadastrada com sucesso!" : "Erro ao cadastrar reclamação" }}
+            {{ mensagemSucesso ? "Reclamação cadastrada com sucesso!" : "Erro ao cadastrar reclamação!" }}
           </h4>
         
           <!-- Botão -->
@@ -256,8 +256,8 @@ const cadastrarReclamacao = async () => {
 .icon-error::after {
   content: '';
   position: absolute;
-  top: 18px;
-  left: 18px;
+  top: 35px;
+  left: 14.5px;
   width: 44px;
   height: 4px;
   background: #dc3545;
