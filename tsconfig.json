@@ -1,7 +1,15 @@
 {
   "compilerOptions": {
+    "target": "ESNext",                
+    "module": "ESNext",                
+    "moduleResolution": "Node",
+    "strict": true,                    
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,           
     "composite": true,
-    "types": ["vite/client", "node"]
+    "types": ["vite/client", "node"]   
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"]
 }
