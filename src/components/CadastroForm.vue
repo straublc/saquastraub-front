@@ -195,7 +195,7 @@ const cadastrar = async () => {
       confirmarSenha.value = "";
       showModal.value = true;
     } else {
-      error.value = response.data.message || "Erro ao cadastrar usuário";
+      error.value = response.data.message || "Erro ao cadastrar usuário!";
     }
   } catch (err: any) {
     console.error(err);

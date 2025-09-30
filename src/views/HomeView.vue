@@ -64,9 +64,9 @@
               <li class="list-group-item"><strong>Piscineiro:</strong> (22) 99999-3333</li>
               <li class="list-group-item"><strong>Jardineiro:</strong> (22) 99999-3333</li>
               <li class="list-group-item"><strong>Faxineira:</strong> (22) 99999-3333</li>
-              <li class="list-group-item"><strong>Polícia:</strong> 190</li>
+              <!-- <li class="list-group-item"><strong>Polícia:</strong> 190</li>
               <li class="list-group-item"><strong>Bombeiro:</strong> 193</li>
-              <li class="list-group-item"><strong>SAMU:</strong> 192</li>
+              <li class="list-group-item"><strong>SAMU:</strong> 192</li> -->
             </ul>
           </div>
         </div>
